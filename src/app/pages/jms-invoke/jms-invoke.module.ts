@@ -9,6 +9,8 @@ import {FocusModule} from 'angular2-focus';
 import { JmsInvokeComponent } from './jms-invoke.component';
 import {DataTableModule} from 'angular2-datatable';
 import {AngularEchartsModule} from 'ngx-echarts';
+import {ToastyModule} from 'ng2-toasty';
+
 export const ProjectRoutes: Routes = [
   {
     path: '',
@@ -27,7 +29,7 @@ export const ProjectRoutes: Routes = [
     RouterModule.forChild(ProjectRoutes),
     SharedModule,
     ChartModule,
-    FormsModule, HttpClientModule,DataTableModule,AngularEchartsModule
+    FormsModule, HttpClientModule, DataTableModule, AngularEchartsModule, ToastyModule.forRoot()
   ],
   declarations: [JmsInvokeComponent]
 })

@@ -1,4 +1,4 @@
-import { OnInit } from '@angular/core';
+import { OnInit, ViewEncapsulation } from '@angular/core';
 import { AfterViewInit, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
@@ -12,13 +12,18 @@ import {NgForm} from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import {animate, style, transition, trigger} from '@angular/animations';
 import '../../../assets/charts/echart/echarts-all.js';
+import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
 
 
 
 @Component({
   selector: 'app-jms-invoke',
   templateUrl: './jms-invoke.component.html',
-  styleUrls: ['./jms-invoke.component.css'],
+  styleUrls: ['./jms-invoke.component.css',
+  '../../../../node_modules/ng2-toasty/style-bootstrap.css',
+  '../../../../node_modules/ng2-toasty/style-default.css',
+  '../../../../node_modules/ng2-toasty/style-material.css',
+], encapsulation: ViewEncapsulation.None,
   animations: [
     trigger('fadeInOutTranslate', [
       transition(':enter', [
@@ -34,6 +39,15 @@ import '../../../assets/charts/echart/echarts-all.js';
 })
 export class JmsInvokeComponent implements OnInit {
   public serviceUrl : String;
+  dataFinal: any;
+  position = 'bottom-right';
+  title: string;
+  msg: string;
+  showClose = true;
+  timeout = 5000;
+  theme = 'bootstrap';
+  type = 'default';
+  closeOther = false;
   dataprojects: any;
   dataclients : any;
   dataOperation : any;
@@ -65,13 +79,13 @@ export class JmsInvokeComponent implements OnInit {
   public sortBy = '';
   public sortOrder = 'desc';
   constructor(  private route: ActivatedRoute,
-    private router: Router, private http: HttpClient){
+    private router: Router, private http: HttpClient, private toastyService: ToastyService){
 
   }
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit(): void {
-  this.serviceUrl = '192.168.110.229';
+  this.serviceUrl = '192.168.110.224';
   this.sub = this.route
   .queryParams
   .subscribe(params => {
@@ -96,7 +110,7 @@ export class JmsInvokeComponent implements OnInit {
 
 
 GetProjects(username: string) {
-  this.http.get('http://192.168.110.229:8084/GetProject?Username=' + username).subscribe(data => {
+  this.http.get('http://192.168.110.224:8084/GetProject?Username=' + username).subscribe(data => {
     this.dataprojects = data;
     for (const elt of this.dataprojects.resultSet.record) {
       this.ProjectsArray.push(elt);
@@ -111,7 +125,7 @@ invoquer(pname : String, cname : String, type : String){
   // console.log(pname);
   // console.log(cname);
   // console.log(type);
-  this.http.get('http://192.168.110.229:7070/ShowOperation?projectName=' + pname + '&clientName=Oreedo&typeTemplate='+type).subscribe(data => {
+  this.http.get('http://192.168.110.224:7070/ShowOperation?projectName=' + pname + '&clientName=Oreedo&typeTemplate='+type).subscribe(data => {
 
     this.dataOperation = data;
     //console.log(data);
@@ -119,62 +133,45 @@ invoquer(pname : String, cname : String, type : String){
 
 });
 Object.assign(this.objInv, {ClientNameInv: "Oreedo",ProjectNameInv:pname,ProjectTypeInv:type});
-//console.log(this.objInv);
-
-
-// console.log(this.UtilsArray)
-}
-
-// tslint:disable-next-line:max-line-length
-CreateInvocationSynchone(TypeInv: String,pname:String,pclient:String,ptype:String,invName:String,InvClient:String,InvPtype:String,Operation:String){
-  this.SelectedProcess = Operation;
-  this.CallsAddedSucc = true;
-console.log(TypeInv);
-console.log(pname);
-console.log(pclient);
-console.log(ptype);
-console.log(invName);
-console.log(InvClient);
-console.log(InvPtype);
-console.log(Operation);
-
 
 }
-// tslint:disable-next-line:max-line-length
-CreateInvocationAsynchrone(TypeInv: String,pname:String,pclient:String,ptype:String,invName:String,InvClient:String,InvPtype:String,Operation:String){
-  this.SelectedProcess = Operation;
-  this.CallsAddedSucc = true;
-  console.log(TypeInv);
-  console.log(pname);
-  console.log(pclient);
-  console.log(ptype);
-  console.log(invName);
-  console.log(InvClient);
-  console.log(InvPtype);
-  console.log(Operation);
-  // tslint:disable-next-line:max-line-length
-  this.http.get('http://192.168.110.229:7071/CreateInvocationProcess?TypeInvocation='+TypeInv+'&NomProject='+pname+'&NomClient=Oreedo&TypeProject='+ptype+'&NomProjectInvoquer='+invName+'&NomClientInvoquer=Oreedo&TypeProjectInvoquer='+InvPtype+'&NomOperation='+Operation).subscribe(data => {
-    this.dataCreateProcess = data;
-    console.log(data);
-    if(this.dataCreateProcess.root.Status === "SUCCESS" ){  this.SelectedProcess = Operation;
-      this.CallsAddedSucc = true; }
-      else {
-        this.CallsAddedFail = true;
-      }
+addToast(options) {
+  if (options.closeOther) {
+    this.toastyService.clearAll();
+  }
+  this.position = options.position ? options.position : this.position;
+  const toastOptions: ToastOptions = {
+    title: options.title,
+    msg: options.msg,
+    showClose: options.showClose,
+    timeout: options.timeout,
+    theme: options.theme,
+    onAdd: (toast: ToastData) => {
+      /* added */
+    },
+    onRemove: (toast: ToastData) => {
+      /* removed */
+    }
+  };
 
-  });
-
+  switch (options.type) {
+    case 'default': this.toastyService.default(toastOptions); break;
+    case 'info': this.toastyService.info(toastOptions); break;
+    case 'success': this.toastyService.success(toastOptions); break;
+    case 'wait': this.toastyService.wait(toastOptions); break;
+    case 'error': this.toastyService.error(toastOptions); break;
+    case 'warning': this.toastyService.warning(toastOptions); break;
+  }
 }
+
 GO(OperationName:String){
   // this.UtilsArray.push(OperationName);
   // console.log(this.UtilsArray);
   Object.assign(this.objOp, {OpName:OperationName});
-  //console.log(this.objOp);
   this.ChoiceLogInfoExcepType =true;
-    // this.JmsInvokeJson='{"Operation:{"OPname":"'+ OperationName'", "InvType":"'+ +'"}"}';
 }
 
-OnSubmit(Loginfo:boolean,LogExcep:boolean,Syn:boolean,Asyn:boolean){
+OnSubmit(Loginfo: boolean, LogExcep: boolean, Syn: boolean, Asyn: boolean){
 
   if (Loginfo)
   {
@@ -210,33 +207,17 @@ OnSubmit(Loginfo:boolean,LogExcep:boolean,Syn:boolean,Asyn:boolean){
   console.log(this.objCreate);
    console.log(JSON.stringify(this.objCreate));
 
-   this.http.post('http://192.168.110.229:7071/CreateInvocationProcess',JSON.stringify(this.objCreate)).subscribe(data => {
+   this.http.post('http://192.168.110.224:7071/CreateInvocationProcess', JSON.stringify(this.objCreate)).subscribe(data => {
      console.log(data);
+     this.dataFinal=data;
+     if (this.dataFinal.root.Status == 'SUCCESS') {
+      // tslint:disable-next-line:max-line-length
+      this.addToast ({title: 'SUCCESS', msg: 'INVOCATION JMS CREATED', timeout: 7000, theme: 'bootstrap', position: 'top-right', type: 'success'});
+    } else {
+      this.addToast ({title: 'FAIL', msg: 'An error occured while creating Jms Invocation', timeout: 7000, theme: 'bootstrap', position: 'top-right', type: 'error'});
+    }
 
 
    });
 }
-//http://localhost:7071/CreateInvocationProcess?TypeInvocation=AsynchronousInvokeCall&NomProject=Demo&NomClient=Oreedo&TypeProject=BP&NomProjectInvoquer=Tibco_Portability_BP&NomClientInvoquer=Oreedo&TypeProjectInvoquer=BP&NomOperation=AddNumbersToPool
-//onSubmit(f: NgForm) {    NomProject,NomClient  ,,TypeProject,NomProjectInvoquer,NomClientInvoquer,TypeProjectInvoquer,NomOperation
-  //console.log( f.value.oname);
-
-  // tslint:disable-next-line:max-line-length
-//   this.http.get('http://' + this.serviceUrl + ':8089/CreateProject?ProjectName=' + f.value.pname + '&ClientName=' + f.value.cname + '&ProjectType=' + f.value.ptype + '&UserName=Hejer').subscribe(data => {
-//   console.log(data);
-//   this.data = data;
-// console.log(this.data.GenerateProjectResponse.Status);
-// this.ProjectName = f.value.pname;
-//
-// if (this.data.GenerateProjectResponse.Status === 'FAILED') {
-//   this.showdivsucc = false;
-//   this.showdivfail = true;
-// this.addnew = false; }
-//
-// else {
-//   this.showdivfail = false;
-//   this.showdivsucc = true;
-//   this.addnew = false;
-//
-//      }});
-//  }
 }
