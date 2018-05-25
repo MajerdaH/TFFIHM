@@ -13,6 +13,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { NgForm } from '@angular/forms';
 import { DatePipe } from '@angular/common';
+import { API_ENDPOINT } from '../../app.constants';
 @Component({
   selector: 'app-simple-page',
   templateUrl: './simple-page.component.html',
@@ -26,7 +27,6 @@ export class SimplePageComponent implements OnInit {
   public pname: any;
   public dataprojects: any;
   public upload: boolean;
-  public serviceUrl: string;
   public uploadPaths = [];
   public selected: string;
   private ProjectsArray: Array<any> = [];
@@ -44,7 +44,6 @@ export class SimplePageComponent implements OnInit {
     private router: Router, private http: HttpClient) { }
 
   ngOnInit() {
-    this.serviceUrl = '192.168.110.186';
     this.basic = true;
     this.upload = false;
     this.sub = this.route
@@ -59,14 +58,14 @@ export class SimplePageComponent implements OnInit {
   }
 
   GetListProjectUpload(username: string) {
-    this.http.get('http://' + this.serviceUrl + ':9935/GetListProjectUpload?project_upload_owner=' + username).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9935/GetListProjectUpload?project_upload_owner=' + username).subscribe(data => {
       this.dataprojects = data;
       for (const elt of this.dataprojects.resultSet.record) {
         this.ProjectsUploadArray.push(elt);
       }
       console.log(this.ProjectsUploadArray);
     });
-      this.http.get('http://' + this.serviceUrl + ':8084/GetProject?Username=' + username).subscribe(data => {
+      this.http.get('http://' + API_ENDPOINT + ':8084/GetProject?Username=' + username).subscribe(data => {
         this.dataprojects = data;
         for (const elt of this.dataprojects.resultSet.record) {
           this.ProjectsArray.push(elt);
@@ -84,7 +83,7 @@ export class SimplePageComponent implements OnInit {
   DeleteField(pname: string) {
     this.pname = pname;
     console.log(pname);
-    this.http.get('http://' + this.serviceUrl + ':9946/DeleteProjectUpload?project_name=' + this.pname).subscribe
+    this.http.get('http://' + API_ENDPOINT + ':9946/DeleteProjectUpload?project_name=' + this.pname).subscribe
       (data => {
         console.log(data);
         this.deleteSuccess = true;

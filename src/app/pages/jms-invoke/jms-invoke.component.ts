@@ -13,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import {animate, style, transition, trigger} from '@angular/animations';
 import '../../../assets/charts/echart/echarts-all.js';
 import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
+import { API_ENDPOINT } from '../../app.constants';
 
 
 
@@ -38,7 +39,6 @@ import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
   ]
 })
 export class JmsInvokeComponent implements OnInit {
-  public serviceUrl : String;
   dataFinal: any;
   position = 'bottom-right';
   title: string;
@@ -85,7 +85,6 @@ export class JmsInvokeComponent implements OnInit {
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit(): void {
-  this.serviceUrl = '192.168.110.224';
   this.sub = this.route
   .queryParams
   .subscribe(params => {
@@ -110,7 +109,7 @@ export class JmsInvokeComponent implements OnInit {
 
 
 GetProjects(username: string) {
-  this.http.get('http://192.168.110.224:8084/GetProject?Username=' + username).subscribe(data => {
+  this.http.get('http:/' +  API_ENDPOINT + ':8084/GetProject?Username=' + username).subscribe(data => {
     this.dataprojects = data;
     for (const elt of this.dataprojects.resultSet.record) {
       this.ProjectsArray.push(elt);
@@ -121,18 +120,17 @@ GetProjects(username: string) {
 
 }
 
-invoquer(pname : String, cname : String, type : String){
-  // console.log(pname);
-  // console.log(cname);
-  // console.log(type);
-  this.http.get('http://192.168.110.224:7070/ShowOperation?projectName=' + pname + '&clientName=Oreedo&typeTemplate='+type).subscribe(data => {
+invoquer(pname: String, cname: String, type: String) {
+
+  // tslint:disable-next-line:max-line-length
+  this.http.get('http://' + API_ENDPOINT + ':7070/ShowOperation?projectName=' + pname + '&clientName=Oreedo&typeTemplate=' + type).subscribe(data => {
 
     this.dataOperation = data;
     //console.log(data);
     this.Operationclicked=true;
 
 });
-Object.assign(this.objInv, {ClientNameInv: "Oreedo",ProjectNameInv:pname,ProjectTypeInv:type});
+Object.assign(this.objInv, {ClientNameInv: "Oreedo", ProjectNameInv: pname, ProjectTypeInv: type});
 
 }
 addToast(options) {
@@ -207,7 +205,7 @@ OnSubmit(Loginfo: boolean, LogExcep: boolean, Syn: boolean, Asyn: boolean){
   console.log(this.objCreate);
    console.log(JSON.stringify(this.objCreate));
 
-   this.http.post('http://192.168.110.224:7071/CreateInvocationProcess', JSON.stringify(this.objCreate)).subscribe(data => {
+   this.http.post('http://' +  API_ENDPOINT + ':7071/CreateInvocationProcess', JSON.stringify(this.objCreate)).subscribe(data => {
      console.log(data);
      this.dataFinal=data;
      if (this.dataFinal.root.Status == 'SUCCESS') {

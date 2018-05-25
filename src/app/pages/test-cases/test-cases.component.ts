@@ -14,6 +14,7 @@ import {CardToggleDirective} from './../../shared/card/card-toggle.directive';
 import {cardToggle, cardClose} from './../../shared/card/card-animation';
 import { Input } from '@angular/core';
 import { GenerateTestComponent } from '../generate-test/generate-test.component';
+import { API_ENDPOINT } from '../../app.constants';
 
 
 @Component({
@@ -69,7 +70,7 @@ CallXmlForRequest(name: string) {
   if ( i.name === name ) {
     const req: string = i.name + 'Request';
    this.OpXmlItem = {};
-  this.http.post('http://' + this.GeneratedTest.serviceUrl + ':8099/GetXmlContent', i.location + 'Request.xml').subscribe(
+  this.http.post('http://' + API_ENDPOINT + ':8099/GetXmlContent', i.location + 'Request.xml').subscribe(
     data => {
       this.OpXmlItem.operationName = name;
       console.log(this.OpXmlItem.operationName);
@@ -88,7 +89,7 @@ CallXmlForRequest(name: string) {
   if ( i.name === name ) {
     const req: string = i.name + 'Response';
    this.OpXmlItem = {};
-  this.http.post('http://' + this.GeneratedTest.serviceUrl + ':8099/GetXmlContent', i.location + 'Response.xml').subscribe(
+  this.http.post('http://' + API_ENDPOINT + ':8099/GetXmlContent', i.location + 'Response.xml').subscribe(
     data => {
       this.OpXmlItem.operationName = name;
       console.log(this.OpXmlItem.operationName);
@@ -106,7 +107,7 @@ CallXmlForRequest(name: string) {
   for (i of this.WsdLOpsArray){
     if ( i.name === name ) {
 // tslint:disable-next-line:max-line-length
-this.http.post('http://' + this.GeneratedTest.serviceUrl + ':8093/ModifyXmlContent', i.location + 'Request.xml' + f.value.XmlNewContent ).subscribe(
+this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location + 'Request.xml' + f.value.XmlNewContent ).subscribe(
     data => {
       console.log(data);
     });
@@ -124,7 +125,7 @@ this.http.post('http://' + this.GeneratedTest.serviceUrl + ':8093/ModifyXmlConte
     for (i of this.WsdLOpsArray){
       if ( i.name === name ) {
 // tslint:disable-next-line:max-line-length
-this.http.post('http://' + this.GeneratedTest.serviceUrl + ':8093/ModifyXmlContent', i.location + 'Response.xml' + f.value.XmlNewContent ).subscribe(
+this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location + 'Response.xml' + f.value.XmlNewContent ).subscribe(
       data => {
         console.log(data);
       });

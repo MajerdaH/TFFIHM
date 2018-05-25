@@ -13,6 +13,7 @@ import { Observable } from 'rxjs/Observable';
 import { RequestOptions } from '@angular/http';
 import { HttpModule, Http, Response, Headers} from '@angular/http';
 import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
+import { API_ENDPOINT, USERS_WORKSPACE } from '../../app.constants';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -95,8 +96,8 @@ export class ProjectComponent implements OnInit {
   // Listing Projects and hiding divisions ON INIT
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit(): void {
-    this.serviceUrl = '192.168.110.224';
-    this.http.get('http://' + this.serviceUrl + ':8090/GetTemplates?ClientName=' + 'Oreedo').subscribe(data => {
+   // this.serviceUrl = '192.168.110.224';
+    this.http.get('http://' + API_ENDPOINT + ':8090/GetTemplates?ClientName=' + 'Oreedo').subscribe(data => {
       this.datatemplates = data;
       console.log(this.datatemplates);
       for (const elt of this.datatemplates.Templates) {
@@ -128,7 +129,7 @@ export class ProjectComponent implements OnInit {
 
   // Get projects BY USER_CLIENTS
   GetProjects(username: string) {
-    this.http.get('http://' + this.serviceUrl + ':8084/GetProject?Username=' + username).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':8084/GetProject?Username=' + username).subscribe(data => {
       this.dataprojects = data;
       for (const elt of this.dataprojects.resultSet.record) {
         this.ProjectsArray.push(elt);
@@ -136,7 +137,7 @@ export class ProjectComponent implements OnInit {
       console.log(this.ProjectsArray);
     });
 
-    this.http.get('http://' + this.serviceUrl + ':8087/GetClient?Username=' + username).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':8087/GetClient?Username=' + username).subscribe(data => {
       this.dataclients = data;
       console.log(this.dataclients.root.record.clientName[0]);
       for (const elt of this.dataclients.root.record.clientName) {
@@ -163,7 +164,7 @@ export class ProjectComponent implements OnInit {
     console.log(pname);
     console.log(client);
     // tslint:disable-next-line:max-line-length
-    this.http.get('http://' + this.serviceUrl + ':8085/checkout?ProjectName=' + pname + '&Client=Orange&Username=hejer').subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':8085/checkout?ProjectName=' + pname + '&Client=Orange&Username=hejer').subscribe(data => {
       console.log(data);
 
     });
@@ -175,7 +176,7 @@ export class ProjectComponent implements OnInit {
   onSelect(client: string) {
     this.TemplatesArray = [];
     console.log(client);
-    this.http.get('http://' + this.serviceUrl + ':8090/GetTemplates?ClientName=' + client).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':8090/GetTemplates?ClientName=' + client).subscribe(data => {
       this.datatemplates = data;
       console.log(this.datatemplates.Templates.template);
       for (const elt of this.datatemplates.Templates.template) {
@@ -189,7 +190,7 @@ export class ProjectComponent implements OnInit {
   // Generating New Project
   onSubmit(f: NgForm) {
     // tslint:disable-next-line:max-line-length
-    this.http.get('http://' + this.serviceUrl + ':8089/CreateProject?ProjectName=' + f.value.pname + '&ClientName=' + f.value.cname + '&ProjectType=' + f.value.ptype + '&UserName=Hejer').subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':8089/CreateProject?ProjectName=' + f.value.pname + '&ClientName=' + f.value.cname + '&ProjectType=' + f.value.ptype + '&UserName=Hejer').subscribe(data => {
       console.log(data);
       this.data = data;
       console.log(this.data.GenerateProjectResponse.Status);
@@ -221,7 +222,7 @@ export class ProjectComponent implements OnInit {
     console.log(this.jsonOperations);
 
     // tslint:disable-next-line:max-line-length
-    this.http.post('http://' + this.serviceUrl + ':8088/CreateOperation', this.jsonOperations).subscribe(data => {
+    this.http.post('http://' + API_ENDPOINT + ':8088/CreateOperation', this.jsonOperations).subscribe(data => {
       console.log(data);
       this.data = data;
       if (this.data.GenerateOperationResponse.Status === 'FAILED') {
@@ -295,13 +296,13 @@ export class ProjectComponent implements OnInit {
       let formData: FormData = new FormData();
       formData.append('projet', file, file.name);
 
-      formData.append("destination", "//talanpfe-157/WorkspaceTibco/UsersWorkspace");
+      formData.append("destination", USERS_WORKSPACE);
       let headers = new Headers();
     // In Angular 5, including the header Content-Type can invalidate your request 
       headers.append('enctype', 'multipart/form-data');
       headers.append('Accept', 'application/json');
      // let options = new RequestOptions({ headers: headers });
-      this.http.post("http://192.168.110.186:3000/upload", formData)
+      this.http.post('http://'+ API_ENDPOINT +':3000/upload', formData)
         .catch(error => Observable.throw(error))
         .subscribe(
           data => console.log('success'),
@@ -313,11 +314,11 @@ export class ProjectComponent implements OnInit {
     this.filename = file.name;
     var nom = file.name.substr(0, file.name.indexOf('.'));
     console.log(nom);
-    this.http.get('http://192.168.110.186:9893/unzipFolder?project_name=' + nom).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9893/unzipFolder?project_name=' + nom).subscribe(data => {
       console.log(data);
 
     });
-    this.http.get('http://192.168.110.186:9934/CreateProjectUpload?project_name=' + nom).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9934/CreateProjectUpload?project_name=' + nom).subscribe(data => {
       console.log(data);
       this.data = data;
       if (this.data.response == 'failed') {
@@ -346,13 +347,13 @@ export class ProjectComponent implements OnInit {
   Download(pname: string) {
 
     this.pname = pname;
-    this.http.get('http://192.168.110.143:9923/getPath?project_name=' + this.pname).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9923/getPath?project_name=' + this.pname).subscribe(data => {
       console.log(data);
       this.output = JSON.stringify(data);
       const path = this.output.substr(13, (this.output.length) - 15);
       console.log(path);
       console.log(this.pname);
-      this.http.get('http://192.168.110.143:3000/download?projectpath=' + path + '&name=' + this.pname).subscribe(res => {
+      this.http.get('http://' + API_ENDPOINT + ':3000/download?projectpath=' + path + '&name=' + this.pname).subscribe(res => {
         //  console.log('show name', this.pname);
         //  console.log('show path', this.output);
         this.res = res;

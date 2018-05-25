@@ -12,6 +12,7 @@ import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
 import {CardToggleDirective} from './../../shared/card/card-toggle.directive';
 import {cardToggle, cardClose} from './../../shared/card/card-animation';
 import {ResourcesComponent} from './../resources/resources.component';
+import { API_ENDPOINT } from '../../app.constants';
 
 
 
@@ -50,7 +51,6 @@ export class GenerateTestComponent implements OnInit {
   public jdbcCon: boolean;
 
   public showActions: boolean;
-  public serviceUrl: string;
   public wsdlfile: any;
   public urldata: any;
   public jsonWsdl: any;
@@ -63,7 +63,7 @@ export class GenerateTestComponent implements OnInit {
   public SelectedOperations: Array<string> = [];
   public FinalOperations: Array<OperationCall> = [];
   public WsdLOpsArray: Array<string> = [];
-  //public TestCasesNames: Array<string> = [];
+
   public opname: string;
   public configInput: boolean;
   public configOutput: boolean;
@@ -96,7 +96,6 @@ export class GenerateTestComponent implements OnInit {
     this.testchoice = false;
     this.uploadwsdlfile = true;
     this.uploadwsdlurl = true;
-    this.serviceUrl = '192.168.110.224';
     this.jdbcCon = false;
     this.sub = this.route
     .queryParams
@@ -157,7 +156,7 @@ export class GenerateTestComponent implements OnInit {
   LoadFromUrl(f: NgForm) {
     console.log(f.value.wsdlurl);
 
-    this.http.get('http://' + this.serviceUrl + ':8094/WsdlFromUrl?WSDLURL=' + f.value.wsdlurl).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':8094/WsdlFromUrl?WSDLURL=' + f.value.wsdlurl).subscribe(data => {
       this.urldata = data;
       this.wsdlfile = this.urldata.FromUrlOutput;
       this.jsonWsdl = this.wsdlfile;
@@ -172,7 +171,7 @@ export class GenerateTestComponent implements OnInit {
   onSubmitUpload(f: NgForm) {
     // tslint:disable-next-line:max-line-length
 
-    this.http.post('http://' + this.serviceUrl + ':8096/GenerateTest?ProjectName=' + this.pname + '&ProjectClient=' + this.pclient + '&ProjectType=' + this.ptype + '&UserName=UserX', this.wsdlfile).subscribe(data => {
+    this.http.post('http://' + API_ENDPOINT + ':8096/GenerateTest?ProjectName=' + this.pname + '&ProjectClient=' + this.pclient + '&ProjectType=' + this.ptype + '&UserName=UserX', this.wsdlfile).subscribe(data => {
       console.log(data);
       this.dataOps = data;
       console.log(this.dataOps.Operations);
@@ -218,7 +217,7 @@ CallXmlForRequest(name: string) {
   if ( i.name === name ) {
     const req: string = i.name + 'Request';
    this.OpXmlItem = {};
-  this.http.post('http://' + this.serviceUrl + ':8099/GetXmlContent', i.location + 'Request.xml').subscribe(
+  this.http.post('http://' + API_ENDPOINT + ':8099/GetXmlContent', i.location + 'Request.xml').subscribe(
     data => {
       this.OpXmlItem.operationName = name;
       console.log(this.OpXmlItem.operationName);
@@ -238,7 +237,7 @@ CallXmlForRequest(name: string) {
     const req: string = i.name + 'Response';
    this.OpXmlItem = {};
 
-  this.http.post('http://' + this.serviceUrl + ':8099/GetXmlContent', i.location + 'Response.xml').subscribe(
+  this.http.post('http://' + API_ENDPOINT + ':8099/GetXmlContent', i.location + 'Response.xml').subscribe(
     data => {
       this.OpXmlItem.operationName = name;
       console.log(this.OpXmlItem.operationName);
@@ -258,7 +257,7 @@ CallXmlForRequest(name: string) {
   for (i of this.WsdLOpsArray){
     if ( i.name === name ) {
 // tslint:disable-next-line:max-line-length
-this.http.post('http://' + this.serviceUrl + ':8093/ModifyXmlContent', i.location + 'Request.xml' + f.value.XmlNewContent ).subscribe(
+this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location + 'Request.xml' + f.value.XmlNewContent ).subscribe(
     data => {
       console.log(data);
     });
@@ -276,7 +275,7 @@ this.http.post('http://' + this.serviceUrl + ':8093/ModifyXmlContent', i.locatio
     for (i of this.WsdLOpsArray){
       if ( i.name === name ) {
 // tslint:disable-next-line:max-line-length
-this.http.post('http://' + this.serviceUrl + ':8093/ModifyXmlContent', i.location + 'Response.xml' + f.value.XmlNewContent ).subscribe(
+this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location + 'Response.xml' + f.value.XmlNewContent ).subscribe(
       data => {
         console.log(data);
       });
@@ -290,7 +289,7 @@ this.http.post('http://' + this.serviceUrl + ':8093/ModifyXmlContent', i.locatio
   // Get saved Jdbc Cnx to be displayed for the user
   GetRessourcesJDBC(ressource_type: string) {
 
-    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataRes = data;
       for (const elt of this.dataRes.ressources.ressourceconfigname) {
         this.RessourcesJDBCArray.push(elt);
@@ -309,7 +308,7 @@ console.log(this.newAttribute);
   const  name_config = this.newAttribute;
 
     // tslint:disable-next-line:max-line-length
-    this.http.get('http://' + this.serviceUrl + ':9907/addExistantJDBC?config_name=' + name_config + '&project_name=' + this.pname + '_Test')
+    this.http.get('http://' + API_ENDPOINT + ':9907/addExistantJDBC?config_name=' + name_config + '&project_name=' + this.pname + '_Test')
       .subscribe
       (data => {
         console.log(data);
@@ -329,7 +328,7 @@ console.log(this.newAttribute);
       });
      this.jdbcCon = false;
      console.log(this.sqlDirectPath);
-  this.http.post('http://' + this.serviceUrl + ':8070/ChangeCnx?CnxName=' + name_config, this.sqlDirectPath)
+  this.http.post('http://' + API_ENDPOINT + ':8070/ChangeCnx?CnxName=' + name_config, this.sqlDirectPath)
   .subscribe
   (data => {
     console.log(data);

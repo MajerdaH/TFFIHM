@@ -12,6 +12,7 @@ import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
 import { cardToggle, cardClose } from '../../shared/card/card-animation';
 import {OperationXml} from '../../operation-xml' ;
 import {CardToggleDirective} from './../../shared/card/card-toggle.directive';
+import { API_ENDPOINT } from '../../app.constants';
 
 
 @Component({
@@ -70,8 +71,6 @@ export class ProjectActionsComponent implements OnInit {
   public jsonWsdl: any;
   public dataOps: any;
   public addLog: boolean;
-  public addCallSucc: boolean;
-  public addCallFail: boolean;
   public addXSDSucc: boolean;
   public addXSDfail: boolean;
   public documentataionAdded: boolean;
@@ -91,7 +90,7 @@ export class ProjectActionsComponent implements OnInit {
 
   ngOnInit(): void {
     // On Initi Show Only Division of Actions
-    this.serviceUrl = '192.168.110.224';
+    //this.serviceUrl = '192.168.110.224';
 
     this.displayOperations = false;
     this.modify = true;
@@ -124,7 +123,7 @@ this.showUpload = false;
     console.log(this.jsonOperations);
 
     // tslint:disable-next-line:max-line-length
-    this.http.post('http://' + this.serviceUrl + ':8088/CreateOperation', this.jsonOperations).subscribe(data => {
+    this.http.post('http://'  + API_ENDPOINT +  ':8088/CreateOperation', this.jsonOperations).subscribe(data => {
       console.log(data);
       this.data = data;
       if (this.data.GenerateOperationResponse.Status === 'FAILED') {
@@ -193,7 +192,7 @@ this.showUpload = false;
   LoadFromUrl(f: NgForm) {
     console.log(f.value.wsdlurl);
    // this.uploadwsdlfile = false;
-    this.http.get('http://' + this.serviceUrl + ':8094/WsdlFromUrl?WSDLURL=' + f.value.wsdlurl).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':8094/WsdlFromUrl?WSDLURL=' + f.value.wsdlurl).subscribe(data => {
       this.urldata = data;
       this.wsdlfile = this.urldata.FromUrlOutput;
       this.jsonWsdl = this.wsdlfile;
@@ -207,7 +206,7 @@ this.showUpload = false;
     this.WsdLOpsArray = [];
     // tslint:disable-next-line:max-line-length
    // console.log(this.wsdlfile);
-    this.http.post('http://' + this.serviceUrl + ':8091/CreateWsdl?projectName=' + this.pname + '&WsdlName=WSDL', this.wsdlfile).subscribe(data => {
+    this.http.post('http://' + API_ENDPOINT + ':8091/CreateWsdl?projectName=' + this.pname + '&WsdlName=WSDL', this.wsdlfile).subscribe(data => {
       this.dataOps = data;
       console.log(this.dataOps.Operations.name);
       for (let i = 0; i < this.dataOps.Operations.name.length; i++) {
@@ -303,7 +302,7 @@ this.showUpload = false;
     console.log(this.jsonSelectedOperations);
 
     // tslint:disable-next-line:max-line-length
-    this.http.post('http://192.168.110.224:8092/CreateCallOperation?ProjectName=' + this.pname, this.jsonSelectedOperations).subscribe(data => {
+    this.http.post('http://' + API_ENDPOINT + ':8092/CreateCallOperation?ProjectName=' + this.pname, this.jsonSelectedOperations).subscribe(data => {
       console.log(data);
       this.addLogdata = data;
       if (this.addLogdata.Response === "Success") {
@@ -321,7 +320,7 @@ this.showUpload = false;
     this.jsonSelectedOperations = '{"SelectedOperations":{"List":' + JSON.stringify(this.FinalOperations) + '}}';
     console.log(this.jsonSelectedOperations);
     // tslint:disable-next-line:max-line-length
-    this.http.post('http://' + this.serviceUrl + ':9922/createXSD?project_name=' + this.pname, this.jsonSelectedOperations).subscribe(data => {
+    this.http.post('http://' + API_ENDPOINT + + ':9922/createXSD?project_name=' + this.pname, this.jsonSelectedOperations).subscribe(data => {
       console.log(data);
       console.log(JSON.stringify(this.SelectedOperations));
 
@@ -363,7 +362,7 @@ this.showUpload = false;
   // call tibco service to generate documentation
  GenerateDocumentataion(pname: string) {
   console.log('*****' + this.pname);
-  this.http.get('http://192.168.110.143:9797/generateDoc?project_name=' + this.pname).subscribe(data => {
+  this.http.get('http://' + API_ENDPOINT + ':9797/generateDoc?project_name=' + this.pname).subscribe(data => {
     console.log(data);
 
     this.documentataionAdded = true;

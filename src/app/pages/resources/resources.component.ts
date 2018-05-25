@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import {AfterContentInit} from '@angular/core';
+import { API_ENDPOINT } from '../../app.constants';
 @Component({
   selector: 'app-resources',
   templateUrl: './resources.component.html',
@@ -18,7 +19,6 @@ export class ResourcesComponent implements OnInit {
   public projname: string;
   public showdivsucc: boolean;
   public showdivfail: boolean;
-  public serviceUrl: string;
   public sub: any;
   public basic: boolean;
   public pname: string;
@@ -67,7 +67,6 @@ export class ResourcesComponent implements OnInit {
     this.addFTP = false;
     this.addEMS = false;
 
-    this.serviceUrl = '192.168.110.224';
     this.sub = this.route
       .queryParams
       .subscribe(params => {
@@ -201,7 +200,7 @@ export class ResourcesComponent implements OnInit {
     console.log(ff.value.port);
     console.log(ff.value.host);
     console.log(ff.value.sid);
-    this.http.get('http://' + this.serviceUrl + ':9904/addJDBC?HOST=' + ff.value.host + '&PORT=' + ff.value.port + '&SID=' + ff.value.sid
+    this.http.get('http://' + API_ENDPOINT + ':9904/addJDBC?HOST=' + ff.value.host + '&PORT=' + ff.value.port + '&SID=' + ff.value.sid
       + '&Username=' + ff.value.Username + '&Password=' + ff.value.password + '&MaxConnections=' + ff.value.MaxConnections + '&Timeout=' + ff.value.timeout + '&project_name=' + this.pname + '&config_name=' + ff.value.configuration_name)
       .subscribe
       (data => {
@@ -233,7 +232,7 @@ export class ResourcesComponent implements OnInit {
     console.log(fff.value.port);
     console.log(fff.value.host);
     console.log(fff.value.ServerType);
-    this.http.get('http://' + this.serviceUrl + ':9903/addHTTP?host=' + fff.value.host + '&port=' + fff.value.port + '&servertype=' + fff.value.ServerType + '&project_name=' + this.pname + '&config_name=' + fff.value.configuration_name)
+    this.http.get('http://' + API_ENDPOINT + ':9903/addHTTP?host=' + fff.value.host + '&port=' + fff.value.port + '&servertype=' + fff.value.ServerType + '&project_name=' + this.pname + '&config_name=' + fff.value.configuration_name)
       .subscribe
       (data => {
 
@@ -265,7 +264,7 @@ export class ResourcesComponent implements OnInit {
     console.log(ffff.value.JNDI_url);
     console.log(ffff.value.JNDI_username);
     console.log(ffff.value.JNDI_password);
-    this.http.get('http://' + this.serviceUrl + ':9901/addEMS?username=' + ffff.value.username + '&password=' + ffff.value.password + '&client_ID=' + ffff.value.clientID
+    this.http.get('http://' + API_ENDPOINT + ':9901/addEMS?username=' + ffff.value.username + '&password=' + ffff.value.password + '&client_ID=' + ffff.value.clientID
       + '&JNDI_url=' + ffff.value.JNDI_url + '&JNDI_username=' + ffff.value.JNDI_username + '&JNDI_password=' + ffff.value.JNDI_password + '&project_name=' + this.pname + '&config_name=' + ffff.value.configuration_name)
       .subscribe
       (data => {
@@ -298,7 +297,7 @@ export class ResourcesComponent implements OnInit {
     console.log(fffff.value.username);
     console.log(fffff.value.password);
     console.log(fffff.value.timeout);
-    this.http.get('http://' + this.serviceUrl + ':9908/addFTP?host=' + fffff.value.host + '&port=' + fffff.value.port + '&username=' + fffff.value.username + '&password=' + fffff.value.password + '&timeout=' + fffff.value.timeout
+    this.http.get('http://' + API_ENDPOINT + ':9908/addFTP?host=' + fffff.value.host + '&port=' + fffff.value.port + '&username=' + fffff.value.username + '&password=' + fffff.value.password + '&timeout=' + fffff.value.timeout
       + '&project_name=' + this.pname + '&config_name=' + fffff.value.configuration_name)
       .subscribe
       (data => {
@@ -351,7 +350,7 @@ export class ResourcesComponent implements OnInit {
   AddexistantJDBCRessource(name_config: string, f_jdbc: NgForm) {
     name_config = f_jdbc.value.ptype;
     console.log(name_config);
-    this.http.get('http://' + this.serviceUrl + ':9907/addExistantJDBC?config_name=' + name_config + '&project_name=' + this.pname)
+    this.http.get('http://' +API_ENDPOINT + ':9907/addExistantJDBC?config_name=' + name_config + '&project_name=' + this.pname)
       .subscribe
       (data => {
 
@@ -375,7 +374,7 @@ export class ResourcesComponent implements OnInit {
   AddexistantHTTPRessource(name_config: string, f_http: NgForm) {
     name_config = f_http.value.ptype;
     console.log(name_config);
-    this.http.get('http://' + this.serviceUrl + ':9918/addExistantHTTP?config_name=' + name_config + '&project_name=' + this.pname)
+    this.http.get('http://' + API_ENDPOINT + ':9918/addExistantHTTP?config_name=' + name_config + '&project_name=' + this.pname)
       .subscribe
       (data => {
 
@@ -398,7 +397,7 @@ export class ResourcesComponent implements OnInit {
   AddexistantEMSRessource(name_config: string, f_ems: NgForm) {
     name_config = f_ems.value.ptype;
     console.log(name_config);
-    this.http.get('http://' + this.serviceUrl + ':9916/addExistantEMS?config_name=' + name_config + '&project_name=' + this.pname)
+    this.http.get('http://' + API_ENDPOINT + ':9916/addExistantEMS?config_name=' + name_config + '&project_name=' + this.pname)
       .subscribe
       (data => {
 
@@ -421,7 +420,7 @@ export class ResourcesComponent implements OnInit {
   AddexistantFTPRessource(name_config: string, f_ftp: NgForm) {
     name_config = f_ftp.value.ptype;
     console.log(name_config);
-    this.http.get('http://' + this.serviceUrl + ':9915/addExistantFTP?config_name=' + name_config + '&project_name=' + this.pname)
+    this.http.get('http://' + API_ENDPOINT + ':9915/addExistantFTP?config_name=' + name_config + '&project_name=' + this.pname)
       .subscribe
       (data => {
 
@@ -478,7 +477,7 @@ export class ResourcesComponent implements OnInit {
   }
   GetRessourcesJDBC(ressource_type: string) {
 
-    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataressources = data;
       for (const elt of this.dataressources.ressources.ressourceconfigname) {
         this.RessourcesArray.push(elt);
@@ -488,7 +487,7 @@ export class ResourcesComponent implements OnInit {
   }
   GetRessourcesHTTP(ressource_type: string) {
 
-    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataressources2 = data;
       for (const elt of this.dataressources2.ressources.ressourceconfigname) {
         this.RessourcesHTTPArray.push(elt);
@@ -498,7 +497,7 @@ export class ResourcesComponent implements OnInit {
   }
   GetRessourcesEMS(ressource_type: string) {
 
-    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataressources3 = data;
       for (const elt of this.dataressources3.ressources.ressourceconfigname) {
         this.RessourcesEMSArray.push(elt);
@@ -508,7 +507,7 @@ export class ResourcesComponent implements OnInit {
   }
   GetRessourcesFTP(ressource_type: string) {
 
-    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataressources4 = data;
       for (const elt of this.dataressources4.ressources.ressourceconfigname) {
         this.RessourcesFTPArray.push(elt);
