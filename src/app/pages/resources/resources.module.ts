@@ -5,7 +5,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap';
 import { HttpClientModule } from '@angular/common/http';
-
+import { ToastyModule } from 'ng2-toasty';
 export const ResourcesRoutes: Routes = [
   {
     path: '',
@@ -22,7 +22,8 @@ export const ResourcesRoutes: Routes = [
   imports: [
     CommonModule,
     RouterModule.forChild(ResourcesRoutes),
-    FormsModule, HttpClientModule
+    FormsModule, HttpClientModule,
+    ToastyModule.forRoot()
   ],
   declarations: [ResourcesComponent]
 })

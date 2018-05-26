@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { FormBuilder, Validators, ControlContainer, FormGroup, FormControl } from '@angular/forms';
 import { NgForm } from '@angular/forms';
@@ -6,19 +6,27 @@ import { NgForm } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import {AfterContentInit} from '@angular/core';
-import { API_ENDPOINT } from '../../app.constants';
+import { AfterContentInit } from '@angular/core';
+import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
 @Component({
   selector: 'app-resources',
   templateUrl: './resources.component.html',
-  styleUrls: ['./resources.component.css']
+  styleUrls: ['./resources.component.css',
+    '../../../../node_modules/ng2-toasty/style-bootstrap.css',
+    '../../../../node_modules/ng2-toasty/style-default.css',
+    '../../../../node_modules/ng2-toasty/style-material.css'
+  ],
+  encapsulation: ViewEncapsulation.None
+
 })
 export class ResourcesComponent implements OnInit {
-
+  public ressourceAdded: boolean;
+  public ressourceNotAdded: boolean;
   public data: any;
   public projname: string;
   public showdivsucc: boolean;
   public showdivfail: boolean;
+  public serviceUrl: string;
   public sub: any;
   public basic: boolean;
   public pname: string;
@@ -38,7 +46,9 @@ export class ResourcesComponent implements OnInit {
   public dataressources2: any;
   public dataressources3: any;
   public dataressources4: any;
+  public datadetails: any;
   public type: string;
+  public DetailsArray: Array<any> = [];
   public RessourcesArray: Array<any> = [];
   public RessourcesHTTPArray: Array<any> = [];
   public RessourcesEMSArray: Array<any> = [];
@@ -54,9 +64,16 @@ export class ResourcesComponent implements OnInit {
     'FTP'
   ];
 
-
+  position = 'bottom-right';
+  title: string;
+  msg: string;
+  showClose = true;
+  timeout = 5000;
+  theme = 'bootstrap';
+  ttype = 'default';
+  closeOther = false;
   constructor(private route: ActivatedRoute,
-    private router: Router, private http: HttpClient) { }
+    private router: Router, private http: HttpClient, private toastyService: ToastyService) { }
 
   ngOnInit() {
     this.showdivsucc = false;
@@ -67,6 +84,7 @@ export class ResourcesComponent implements OnInit {
     this.addFTP = false;
     this.addEMS = false;
 
+    this.serviceUrl = '192.168.110.41';
     this.sub = this.route
       .queryParams
       .subscribe(params => {
@@ -200,7 +218,7 @@ export class ResourcesComponent implements OnInit {
     console.log(ff.value.port);
     console.log(ff.value.host);
     console.log(ff.value.sid);
-    this.http.get('http://' + API_ENDPOINT + ':9904/addJDBC?HOST=' + ff.value.host + '&PORT=' + ff.value.port + '&SID=' + ff.value.sid
+    this.http.get('http://' + this.serviceUrl + ':9904/addJDBC?HOST=' + ff.value.host + '&PORT=' + ff.value.port + '&SID=' + ff.value.sid
       + '&Username=' + ff.value.Username + '&Password=' + ff.value.password + '&MaxConnections=' + ff.value.MaxConnections + '&Timeout=' + ff.value.timeout + '&project_name=' + this.pname + '&config_name=' + ff.value.configuration_name)
       .subscribe
       (data => {
@@ -211,16 +229,16 @@ export class ResourcesComponent implements OnInit {
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.Status === 'failed') {
-          this.showdivsucc = false;
-          this.showdivfail = true;
-
+          //  this.showdivsucc = false;
+          //  this.showdivfail = true;
+          this.addToast({ title: 'Success', msg: 'Failed !  please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'Warning' });
         }
 
         // tslint:disable-next-line:one-line
         else {
-          this.showdivfail = false;
-          this.showdivsucc = true;
-
+          //  this.showdivfail = false;
+          //    this.showdivsucc = true;
+          this.addToast({ title: 'Success', msg: 'Ressource created with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
 
         }
       });
@@ -232,7 +250,7 @@ export class ResourcesComponent implements OnInit {
     console.log(fff.value.port);
     console.log(fff.value.host);
     console.log(fff.value.ServerType);
-    this.http.get('http://' + API_ENDPOINT + ':9903/addHTTP?host=' + fff.value.host + '&port=' + fff.value.port + '&servertype=' + fff.value.ServerType + '&project_name=' + this.pname + '&config_name=' + fff.value.configuration_name)
+    this.http.get('http://' + this.serviceUrl + ':9903/addHTTP?host=' + fff.value.host + '&port=' + fff.value.port + '&servertype=' + fff.value.ServerType + '&project_name=' + this.pname + '&config_name=' + fff.value.configuration_name)
       .subscribe
       (data => {
 
@@ -242,16 +260,16 @@ export class ResourcesComponent implements OnInit {
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.Status === 'failed') {
-          this.showdivsucc = false;
-          this.showdivfail = true;
-
+          //    this.showdivsucc = false;
+          //  this.showdivfail = true;
+          this.addToast({ title: 'Success', msg: 'Failed !  please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'Warning' });
         }
 
         // tslint:disable-next-line:one-line
         else {
-          this.showdivfail = false;
-          this.showdivsucc = true;
-
+          //    this.showdivfail = false;
+          //    this.showdivsucc = true;
+          this.addToast({ title: 'Success', msg: 'Ressource created with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
 
         }
       });
@@ -264,7 +282,7 @@ export class ResourcesComponent implements OnInit {
     console.log(ffff.value.JNDI_url);
     console.log(ffff.value.JNDI_username);
     console.log(ffff.value.JNDI_password);
-    this.http.get('http://' + API_ENDPOINT + ':9901/addEMS?username=' + ffff.value.username + '&password=' + ffff.value.password + '&client_ID=' + ffff.value.clientID
+    this.http.get('http://' + this.serviceUrl + ':9901/addEMS?username=' + ffff.value.username + '&password=' + ffff.value.password + '&client_ID=' + ffff.value.clientID
       + '&JNDI_url=' + ffff.value.JNDI_url + '&JNDI_username=' + ffff.value.JNDI_username + '&JNDI_password=' + ffff.value.JNDI_password + '&project_name=' + this.pname + '&config_name=' + ffff.value.configuration_name)
       .subscribe
       (data => {
@@ -275,15 +293,16 @@ export class ResourcesComponent implements OnInit {
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.status === 'failed') {
-          this.showdivsucc = false;
-          this.showdivfail = true;
-
+          //    this.showdivsucc = false;
+          //  this.showdivfail = true;
+          this.addToast({ title: 'Success', msg: 'Failed !  please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'Warning' });
         }
 
         // tslint:disable-next-line:one-line
         else {
-          this.showdivfail = false;
-          this.showdivsucc = true;
+          this.addToast({ title: 'Success', msg: 'Ressource created with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
+          //    this.showdivfail = false;
+          //    this.showdivsucc = true;
 
 
         }
@@ -297,7 +316,7 @@ export class ResourcesComponent implements OnInit {
     console.log(fffff.value.username);
     console.log(fffff.value.password);
     console.log(fffff.value.timeout);
-    this.http.get('http://' + API_ENDPOINT + ':9908/addFTP?host=' + fffff.value.host + '&port=' + fffff.value.port + '&username=' + fffff.value.username + '&password=' + fffff.value.password + '&timeout=' + fffff.value.timeout
+    this.http.get('http://' + this.serviceUrl + ':9908/addFTP?host=' + fffff.value.host + '&port=' + fffff.value.port + '&username=' + fffff.value.username + '&password=' + fffff.value.password + '&timeout=' + fffff.value.timeout
       + '&project_name=' + this.pname + '&config_name=' + fffff.value.configuration_name)
       .subscribe
       (data => {
@@ -308,16 +327,16 @@ export class ResourcesComponent implements OnInit {
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.status === 'failed') {
-          this.showdivsucc = false;
-          this.showdivfail = true;
-
+          //  this.showdivsucc = false;
+          //  this.showdivfail = true;
+          this.addToast({ title: 'Success', msg: 'Failed !  please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'Warning' });
         }
 
         // tslint:disable-next-line:one-line
         else {
-          this.showdivfail = false;
-          this.showdivsucc = true;
-
+          //  this.showdivfail = false;
+          //  this.showdivsucc = true;
+          this.addToast({ title: 'Success', msg: 'Ressource created with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
 
         }
       });
@@ -350,7 +369,7 @@ export class ResourcesComponent implements OnInit {
   AddexistantJDBCRessource(name_config: string, f_jdbc: NgForm) {
     name_config = f_jdbc.value.ptype;
     console.log(name_config);
-    this.http.get('http://' +API_ENDPOINT + ':9907/addExistantJDBC?config_name=' + name_config + '&project_name=' + this.pname)
+    this.http.get('http://' + this.serviceUrl + ':9907/addExistantJDBC?config_name=' + name_config + '&project_name=' + this.pname)
       .subscribe
       (data => {
 
@@ -360,13 +379,15 @@ export class ResourcesComponent implements OnInit {
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.Status === 'failed') {
-          this.showdivsucc = false;
-          this.showdivfail = true;
+          //    this.showdivsucc = false;
+          //  this.showdivfail = true;
+          this.addToast({ title: 'Success', msg: 'Failed !  please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'Warning' });
         }
         // tslint:disable-next-line:one-line
         else {
-          this.showdivfail = false;
-          this.showdivsucc = true;
+          this.addToast({ title: 'Success', msg: 'Ressource created with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
+          //    this.showdivfail = false;
+          //    this.showdivsucc = true;
         }
       });
   }
@@ -374,7 +395,7 @@ export class ResourcesComponent implements OnInit {
   AddexistantHTTPRessource(name_config: string, f_http: NgForm) {
     name_config = f_http.value.ptype;
     console.log(name_config);
-    this.http.get('http://' + API_ENDPOINT + ':9918/addExistantHTTP?config_name=' + name_config + '&project_name=' + this.pname)
+    this.http.get('http://' + this.serviceUrl + ':9918/addExistantHTTP?config_name=' + name_config + '&project_name=' + this.pname)
       .subscribe
       (data => {
 
@@ -384,20 +405,22 @@ export class ResourcesComponent implements OnInit {
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.status === 'failed') {
-          this.showdivsucc = false;
-          this.showdivfail = true;
+          //    this.showdivsucc = false;
+          //    this.showdivfail = true;
+          this.addToast({ title: 'Success', msg: 'Failed !  please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'Warning' });
         }
         // tslint:disable-next-line:one-line
         else {
-          this.showdivfail = false;
-          this.showdivsucc = true;
+          this.addToast({ title: 'Success', msg: 'Ressource created with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
+          //    this.showdivfail = false;
+          //  this.showdivsucc = true;
         }
       });
   }
   AddexistantEMSRessource(name_config: string, f_ems: NgForm) {
     name_config = f_ems.value.ptype;
     console.log(name_config);
-    this.http.get('http://' + API_ENDPOINT + ':9916/addExistantEMS?config_name=' + name_config + '&project_name=' + this.pname)
+    this.http.get('http://' + this.serviceUrl + ':9916/addExistantEMS?config_name=' + name_config + '&project_name=' + this.pname)
       .subscribe
       (data => {
 
@@ -407,20 +430,22 @@ export class ResourcesComponent implements OnInit {
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.status === 'failed') {
-          this.showdivsucc = false;
-          this.showdivfail = true;
+          //  this.showdivsucc = false;
+          //this.showdivfail = true;
+          this.addToast({ title: 'Success', msg: 'Failed !  please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'Warning' });
         }
         // tslint:disable-next-line:one-line
         else {
-          this.showdivfail = false;
-          this.showdivsucc = true;
+          //  this.showdivfail = false;
+          //  this.showdivsucc = true;
+          this.addToast({ title: 'Success', msg: 'Ressource created with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
         }
       });
   }
   AddexistantFTPRessource(name_config: string, f_ftp: NgForm) {
     name_config = f_ftp.value.ptype;
     console.log(name_config);
-    this.http.get('http://' + API_ENDPOINT + ':9915/addExistantFTP?config_name=' + name_config + '&project_name=' + this.pname)
+    this.http.get('http://' + this.serviceUrl + ':9915/addExistantFTP?config_name=' + name_config + '&project_name=' + this.pname)
       .subscribe
       (data => {
 
@@ -430,13 +455,15 @@ export class ResourcesComponent implements OnInit {
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.status === 'failed') {
-          this.showdivsucc = false;
-          this.showdivfail = true;
+          //    this.showdivsucc = false;
+          //    this.showdivfail = true;
+          this.addToast({ title: 'Success', msg: 'Failed !  please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'Warning' });
         }
         // tslint:disable-next-line:one-line
         else {
-          this.showdivfail = false;
-          this.showdivsucc = true;
+          this.addToast({ title: 'Success', msg: 'Ressource created with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
+          //  this.showdivfail = false;
+          //  this.showdivsucc = true;
         }
       });
   }
@@ -477,7 +504,7 @@ export class ResourcesComponent implements OnInit {
   }
   GetRessourcesJDBC(ressource_type: string) {
 
-    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataressources = data;
       for (const elt of this.dataressources.ressources.ressourceconfigname) {
         this.RessourcesArray.push(elt);
@@ -487,7 +514,7 @@ export class ResourcesComponent implements OnInit {
   }
   GetRessourcesHTTP(ressource_type: string) {
 
-    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataressources2 = data;
       for (const elt of this.dataressources2.ressources.ressourceconfigname) {
         this.RessourcesHTTPArray.push(elt);
@@ -497,7 +524,7 @@ export class ResourcesComponent implements OnInit {
   }
   GetRessourcesEMS(ressource_type: string) {
 
-    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataressources3 = data;
       for (const elt of this.dataressources3.ressources.ressourceconfigname) {
         this.RessourcesEMSArray.push(elt);
@@ -507,7 +534,7 @@ export class ResourcesComponent implements OnInit {
   }
   GetRessourcesFTP(ressource_type: string) {
 
-    this.http.get('http://' + API_ENDPOINT + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
+    this.http.get('http://' + this.serviceUrl + ':9920/getRessources?ressource_type=' + ressource_type).subscribe(data => {
       this.dataressources4 = data;
       for (const elt of this.dataressources4.ressources.ressourceconfigname) {
         this.RessourcesFTPArray.push(elt);
@@ -548,7 +575,105 @@ export class ResourcesComponent implements OnInit {
     this.showdivfail = false;
   }
 
+  AddDetailsJDBC(config_name: string, f_jdbc: NgForm) {
+    this.addexistantJDBC = true;
+    this.addexistantHTTP = false;
+    this.addexistantEMS = false;
+    this.addexistantFTP = false;
+    config_name = f_jdbc.value.ptype;
+    this.getDetails(config_name);
+    this.showDetails = !this.showDetails;
+    this.showdivfail = false;
+    this.ressourceAdded = false;
+    this.ressourceNotAdded = false;
+  }
 
+  AddDetailsHTTP(config_name: string, f_http: NgForm) {
+
+    this.addexistantJDBC = false;
+    this.addexistantHTTP = true;
+    this.addexistantEMS = false;
+    this.addexistantFTP = false;
+    config_name = f_http.value.ptype;
+    this.getDetails(config_name);
+    this.showDetails = !this.showDetails;
+    this.showdivfail = false;
+    this.ressourceAdded = false;
+    this.ressourceNotAdded = false;
+
+  }
+  AddDetailsEMS(config_name: string, f_ems: NgForm) {
+    this.addexistantJDBC = false;
+    this.addexistantHTTP = false;
+    this.addexistantEMS = true;
+    this.addexistantFTP = false;
+    config_name = f_ems.value.ptype;
+    this.getDetails(config_name);
+    this.showDetails = !this.showDetails;
+    this.showdivfail = false;
+    this.ressourceAdded = false;
+    this.ressourceNotAdded = false;
+
+
+  }
+  AddDetailsFTP(config_name: string, f_ftp: NgForm) {
+    this.addexistantJDBC = false;
+    this.addexistantHTTP = false;
+    this.addexistantEMS = false;
+    this.addexistantFTP = true;
+    config_name = f_ftp.value.ptype;
+    this.getDetails(config_name);
+    this.showDetails = !this.showDetails;
+    this.showdivfail = false;
+    this.ressourceAdded = false;
+    this.ressourceNotAdded = false;
+
+
+  }
+  getDetails(config_name: string) {
+    console.log('show:' + config_name);
+    this.http.get('http://' + this.serviceUrl + ':9914/addDetails?config_name=' + config_name).subscribe(data => {
+      this.datadetails = data;
+      for (const el1 of this.DetailsArray) {
+        this.DetailsArray.splice(el1);
+      }
+      for (const elt of this.datadetails.resultset.record) {
+
+        this.DetailsArray.push(elt);
+      }
+      console.log(this.DetailsArray);
+    });
+
+  }
+
+  addToast(options) {
+    if (options.closeOther) {
+      this.toastyService.clearAll();
+    }
+    this.position = options.position ? options.position : this.position;
+    const toastOptions: ToastOptions = {
+      title: options.title,
+      msg: options.msg,
+      showClose: options.showClose,
+      timeout: options.timeout,
+      theme: options.theme,
+      onAdd: (toast: ToastData) => {
+        /* added */
+      },
+      onRemove: (toast: ToastData) => {
+        /* removed */
+      }
+    };
+
+    switch (options.type) {
+      case 'default': this.toastyService.default(toastOptions); break;
+      case 'info': this.toastyService.info(toastOptions); break;
+      case 'success': this.toastyService.success(toastOptions); break;
+      case 'wait': this.toastyService.wait(toastOptions); break;
+      case 'error': this.toastyService.error(toastOptions); break;
+      case 'warning': this.toastyService.warning(toastOptions); break;
+    }
+  }
 
 
 }
@@ -1118,4 +1243,4 @@ export class DocsComponent implements OnInit {
 
 
 
-*/ 
+*/

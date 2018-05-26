@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import * as shape from 'd3-shape';
 /*import { colorSets } from '@swimlane/ngx-charts/release/utils/color-sets';
 import {
@@ -13,11 +13,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { NgForm } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { API_ENDPOINT } from '../../app.constants';
+import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
 @Component({
   selector: 'app-simple-page',
   templateUrl: './simple-page.component.html',
-  styleUrls: ['./simple-page.component.css']
+  styleUrls: ['./simple-page.component.css',
+    '../../../../node_modules/ng2-toasty/style-bootstrap.css',
+    '../../../../node_modules/ng2-toasty/style-default.css',
+    '../../../../node_modules/ng2-toasty/style-material.css']
+  ,
+  encapsulation: ViewEncapsulation.None
+
 })
 export class SimplePageComponent implements OnInit {
 
@@ -27,6 +33,7 @@ export class SimplePageComponent implements OnInit {
   public pname: any;
   public dataprojects: any;
   public upload: boolean;
+  public serviceUrl: string;
   public uploadPaths = [];
   public selected: string;
   private ProjectsArray: Array<any> = [];
@@ -35,15 +42,23 @@ export class SimplePageComponent implements OnInit {
   public showdivsucc: boolean;
   public showdivfail: boolean;
   public deleteSuccess: boolean;
+  position = 'top-right';
+  title: string;
+  msg: string;
+  showClose = true;
+  timeout = 5000;
+  theme = 'bootstrap';
+  type = 'default';
+  closeOther = false;
   //  address :string;
-  public Projects = ['WorkspaceUsers', 'WorkspaceShared'];
   filesToUpload: Array<File> = [];
   // relativePath :string;
   constructor(
     private route: ActivatedRoute,
-    private router: Router, private http: HttpClient) { }
+    private router: Router, private http: HttpClient, private toastyService: ToastyService) { }
 
   ngOnInit() {
+    this.serviceUrl = '192.168.110.41';
     this.basic = true;
     this.upload = false;
     this.sub = this.route
@@ -58,20 +73,49 @@ export class SimplePageComponent implements OnInit {
   }
 
   GetListProjectUpload(username: string) {
-    this.http.get('http://' + API_ENDPOINT + ':9935/GetListProjectUpload?project_upload_owner=' + username).subscribe(data => {
+    this.http.get('http://' + this.serviceUrl + ':9935/GetListProjectUpload?project_upload_owner=' + username).subscribe(data => {
       this.dataprojects = data;
       for (const elt of this.dataprojects.resultSet.record) {
         this.ProjectsUploadArray.push(elt);
       }
       console.log(this.ProjectsUploadArray);
     });
-      this.http.get('http://' + API_ENDPOINT + ':8084/GetProject?Username=' + username).subscribe(data => {
-        this.dataprojects = data;
-        for (const elt of this.dataprojects.resultSet.record) {
-          this.ProjectsArray.push(elt);
-        }
-        console.log(this.ProjectsArray);
-      });
+    this.http.get('http://' + this.serviceUrl + ':8084/GetProject?Username=' + username).subscribe(data => {
+      this.dataprojects = data;
+      for (const elt of this.dataprojects.resultSet.record) {
+        this.ProjectsArray.push(elt);
+      }
+      console.log(this.ProjectsArray);
+    });
+  }
+
+  addToast(options) {
+    if (options.closeOther) {
+      this.toastyService.clearAll();
+    }
+    //  this.position = options.position ? options.position : this.position;
+    const toastOptions: ToastOptions = {
+      title: options.title,
+      msg: options.msg,
+      showClose: options.showClose,
+      timeout: options.timeout,
+      theme: options.theme,
+      onAdd: (toast: ToastData) => {
+        /* added */
+      },
+      onRemove: (toast: ToastData) => {
+        /* removed */
+      }
+    };
+
+    switch (options.type) {
+      case 'default': this.toastyService.default(toastOptions); break;
+      case 'info': this.toastyService.info(toastOptions); break;
+      case 'success': this.toastyService.success(toastOptions); break;
+      case 'wait': this.toastyService.wait(toastOptions); break;
+      case 'error': this.toastyService.error(toastOptions); break;
+      case 'warning': this.toastyService.warning(toastOptions); break;
+    }
   }
   OnUpload(name2: string) {
     //this.router.navigate(['./dashboard'], { queryParams: { project: name2 } });
@@ -82,11 +126,12 @@ export class SimplePageComponent implements OnInit {
 
   DeleteField(pname: string) {
     this.pname = pname;
-    console.log(pname);
-    this.http.get('http://' + API_ENDPOINT + ':9946/DeleteProjectUpload?project_name=' + this.pname).subscribe
+    console.log(this.pname);
+    this.http.get('http://' + this.serviceUrl + ':9946/DeleteProjectUpload?project_name=' + this.pname).subscribe
       (data => {
         console.log(data);
-        this.deleteSuccess = true;
+        //this.deleteSuccess = true;
+        this.addToast({ title: 'Success', msg: 'Project deleted with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
 
       });
   }
