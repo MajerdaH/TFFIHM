@@ -125,16 +125,20 @@ export class SimplePageComponent implements OnInit {
     //this.operation = false;
   }
 
-  DeleteField(pname: string) {
+  DeleteField(pname: string, index) {
     this.pname = pname;
     console.log(this.pname);
     this.http.get('http://' + API_ENDPOINT + ':9946/DeleteProjectUpload?project_name=' + this.pname).subscribe
       (data => {
+
+        this.ProjectsUploadArray.splice(index, 1);
+
         console.log(data);
         //this.deleteSuccess = true;
         this.addToast({ title: 'Success', msg: 'Project deleted with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
 
       });
+
   }
 
 }
