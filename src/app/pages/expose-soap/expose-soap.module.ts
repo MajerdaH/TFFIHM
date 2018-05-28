@@ -9,6 +9,7 @@ import { FormsModule } from '@angular/forms';
 import {FocusModule} from 'angular2-focus';
 // import {SelectModule} from 'ng2-select';
 // import { MDBBootstrapModule } from 'angular-bootstrap-md';
+import {ToastyModule} from 'ng2-toasty';
 
 export const ExposeSoapRoutes: Routes = [
   {
@@ -28,7 +29,7 @@ export const ExposeSoapRoutes: Routes = [
     RouterModule.forChild(ExposeSoapRoutes),
     SharedModule,
     ChartModule,
-    FormsModule, HttpClientModule
+    FormsModule, HttpClientModule, ToastyModule.forRoot()
   ],
   schemas: [ NO_ERRORS_SCHEMA ],
   declarations: [ExposeSoapComponent]
