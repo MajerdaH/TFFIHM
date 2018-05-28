@@ -104,7 +104,7 @@
 
           </tbody>
           <button type="button" class="btn btn-primary" (click)="SelectOperations()">Submit Operations</button>
-          <button type="button" class="btn btn-primary" (click)="CreateXSD()" class="btn btn-primary">Create Operations XSD </button>
+
         </table>
       </form>
     </div>
@@ -137,7 +137,7 @@
           </tbody>
         </table>
         <button type="button" (click)="SubmitOperationsToService()" class="btn btn-primary">Create Calls</button>
-
+        <button type="button" class="btn btn-primary" (click)="CreateXSD()" class="btn btn-primary">Create Operations XSD </button>
       </form>
     </div>
   </app-card>
@@ -228,7 +228,4 @@
       <strong>Success! {{pname}} </strong> downloaded With Success.
     </div>
   </div>
-
-
-
   <ng2-toasty [position]="position"></ng2-toasty>

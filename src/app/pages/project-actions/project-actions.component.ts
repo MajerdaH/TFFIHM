@@ -322,6 +322,7 @@ export class ProjectActionsComponent implements OnInit {
   }
   //create xsd for each selected operation
   CreateXSD() {
+    //create xsds
     this.jsonSelectedOperations = '{"SelectedOperations":{"List":' + JSON.stringify(this.FinalOperations) + '}}';
     console.log(this.jsonSelectedOperations);
     this.http.post('http://' + API_ENDPOINT + ':9922/createXSD?project_name=' + this.pname, this.jsonSelectedOperations).subscribe(data => {
