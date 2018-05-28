@@ -6,12 +6,12 @@ import { NgForm } from '@angular/forms';
 import { FormBuilder, Validators, ControlContainer, FormGroup, FormControl } from '@angular/forms';
 import { FocusModule } from 'angular2-focus';
 import { Router } from '@angular/router';
-import { ProjectfilterpipePipe} from './../../projectfilterpipe.pipe';
-import {animate, style, transition, trigger} from '@angular/animations';
+import { ProjectfilterpipePipe } from './../../projectfilterpipe.pipe';
+import { animate, style, transition, trigger } from '@angular/animations';
 import '../../../assets/charts/echart/echarts-all.js';
 import { Observable } from 'rxjs/Observable';
 import { RequestOptions } from '@angular/http';
-import { HttpModule, Http, Response, Headers} from '@angular/http';
+import { HttpModule, Http, Response, Headers } from '@angular/http';
 import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
 import { API_ENDPOINT, USERS_WORKSPACE } from '../../app.constants';
 
@@ -20,18 +20,18 @@ import { API_ENDPOINT, USERS_WORKSPACE } from '../../app.constants';
   selector: 'app-project',
   templateUrl: './project.component.html',
   styleUrls: ['./project.component.css',
-  '../../../../node_modules/ng2-toasty/style-bootstrap.css',
-  '../../../../node_modules/ng2-toasty/style-default.css',
-  '../../../../node_modules/ng2-toasty/style-material.css'],
+    '../../../../node_modules/ng2-toasty/style-bootstrap.css',
+    '../../../../node_modules/ng2-toasty/style-default.css',
+    '../../../../node_modules/ng2-toasty/style-material.css'],
   animations: [
     trigger('fadeInOutTranslate', [
       transition(':enter', [
-        style({opacity: 0}),
-        animate('400ms ease-in-out', style({opacity: 1}))
+        style({ opacity: 0 }),
+        animate('400ms ease-in-out', style({ opacity: 1 }))
       ]),
       transition(':leave', [
-        style({transform: 'translate(0)'}),
-        animate('400ms ease-in-out', style({opacity: 0}))
+        style({ transform: 'translate(0)' }),
+        animate('400ms ease-in-out', style({ opacity: 0 }))
       ])
     ])
   ]
@@ -58,7 +58,7 @@ export class ProjectComponent implements OnInit {
   public operation: boolean;
   public autofoc: boolean;
   public addnewops: boolean;
-  
+
   public modify: boolean;
   public upload: boolean;
   public checkout: boolean;
@@ -82,8 +82,8 @@ export class ProjectComponent implements OnInit {
   public selectedvalue: string;
   public projname: string;
   private newAttribute: string;
-  public output: string ;
-  public pname: string ;
+  public output: string;
+  public pname: string;
 
   public rowsOnPage = 10;
   public filterQuery = '';
@@ -96,7 +96,7 @@ export class ProjectComponent implements OnInit {
   // Listing Projects and hiding divisions ON INIT
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit(): void {
-   // this.serviceUrl = '192.168.110.224';
+    // this.serviceUrl = '192.168.110.224';
     this.http.get('http://' + API_ENDPOINT + ':8090/GetTemplates?ClientName=' + 'Oreedo').subscribe(data => {
       this.datatemplates = data;
       console.log(this.datatemplates);
@@ -226,7 +226,7 @@ export class ProjectComponent implements OnInit {
       console.log(data);
       this.data = data;
       if (this.data.GenerateOperationResponse.Status === 'FAILED') {
-      this.OperationsNotAdded = true;
+        this.OperationsNotAdded = true;
         this.OperationsAdded = false;
         this.operation = false;
       }
@@ -288,7 +288,7 @@ export class ProjectComponent implements OnInit {
       case 'warning': this.toastyService.warning(toastOptions); break;
     }
   }
-  
+  //choose file to upload node js serviceUrl
   fileChange(event) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
@@ -296,13 +296,12 @@ export class ProjectComponent implements OnInit {
       let formData: FormData = new FormData();
       formData.append('projet', file, file.name);
 
-      formData.append("destination", USERS_WORKSPACE);
+      formData.append("destination", "//talanpfe-157/WorkspaceTibco/UsersWorkspace");
       let headers = new Headers();
-    // In Angular 5, including the header Content-Type can invalidate your request 
       headers.append('enctype', 'multipart/form-data');
       headers.append('Accept', 'application/json');
-     // let options = new RequestOptions({ headers: headers });
-      this.http.post('http://'+ API_ENDPOINT +':3000/upload', formData)
+      // let options = new RequestOptions({ headers: headers });
+      this.http.post('http://' + this.serviceUrl + ':3001/upload', formData)
         .catch(error => Observable.throw(error))
         .subscribe(
           data => console.log('success'),
@@ -321,47 +320,66 @@ export class ProjectComponent implements OnInit {
     this.http.get('http://' + API_ENDPOINT + ':9934/CreateProjectUpload?project_name=' + nom).subscribe(data => {
       console.log(data);
       this.data = data;
+
       if (this.data.response == 'failed') {
-        console.log('project already exists , try another name ! ');
-        this.showdivfail = true;
+        //  console.log('project already exists , try another name ! ');
+
+        this.addToast({ title: 'Success', msg: 'please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'warning' });
       }
       else {
         console.log('success upload');
-        this.uploadSuccess = true;
       }
 
 
     });
   }
+
+  //redirect to uploaded projects page
   uploadFolder(f: NgForm, event) {
-    if (this.filename == undefined) { this.uploadFail = true; }
+    if (this.filename == undefined) {
+      //  this.uploadFail = true;
+      this.addToast({ title: 'Success', msg: 'please check your input , you shoold choose a project to upload', timeout: 9000, theme: 'default', position: 'top-right', type: 'warning' });
+    }
     // tslint:disable-next-line:one-line
     else {
+
+
+      this.addToast({ title: 'Success', msg: 'Project Uploaded with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
+      //  this.uploadSuccess = true;
       this.router.navigate(['./simple-page']);
-      this.uploadSuccess = true;
     }
     console.log(this.filename);
     console.log(f.value.pname);
   }
 
+  //call node js service to download project
   Download(pname: string) {
-
+    console.log(this.pname);
     this.pname = pname;
     this.http.get('http://' + API_ENDPOINT + ':9923/getPath?project_name=' + this.pname).subscribe(data => {
       console.log(data);
+
       this.output = JSON.stringify(data);
       const path = this.output.substr(13, (this.output.length) - 15);
       console.log(path);
       console.log(this.pname);
+      let headers = new Headers();
+      headers.append('enctype', 'multipart/form-data');
+      headers.append('Accept', 'application/json');
       this.http.get('http://' + API_ENDPOINT + ':3000/download?projectpath=' + path + '&name=' + this.pname).subscribe(res => {
-        //  console.log('show name', this.pname);
-        //  console.log('show path', this.output);
         this.res = res;
         window.location.href = this.res.url;
 
       });
-    });
 
+    });
+    this.addToast({ title: 'Loading', msg: 'Downloading Project', timeout: 3000, theme: 'default', position: 'top-right', type: 'wait' });
+    setTimeout(() => {
+      // tslint:disable-next-line:max-line-length
+      this.addToast({ title: 'Success', msg: 'Project downloaded with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
+
+      //  this.addToast({ title: 'Success', msg: 'Project downloaded with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
+    }, 3000);
   }
 
 
