@@ -7,11 +7,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RequestOptions } from '@angular/http';
 import { NgForm } from '@angular/forms/src/directives/ng_form';
 import { OperationCall } from '../../operation-call';
-import {OperationXml} from '../../operation-xml' ;
+import { OperationXml } from '../../operation-xml';
 import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
-import {CardToggleDirective} from './../../shared/card/card-toggle.directive';
-import {cardToggle, cardClose} from './../../shared/card/card-animation';
-import {ResourcesComponent} from './../resources/resources.component';
+import { CardToggleDirective } from './../../shared/card/card-toggle.directive';
+import { cardToggle, cardClose } from './../../shared/card/card-animation';
+import { ResourcesComponent } from './../resources/resources.component';
 import { API_ENDPOINT } from '../../app.constants';
 
 
@@ -20,20 +20,20 @@ import { API_ENDPOINT } from '../../app.constants';
   selector: 'app-generate-test',
   templateUrl: './generate-test.component.html',
   styleUrls: ['./generate-test.component.css',
-  '../../../../node_modules/ng2-toasty/style-bootstrap.css',
-  '../../../../node_modules/ng2-toasty/style-default.css',
-  '../../../../node_modules/ng2-toasty/style-material.css',
+    '../../../../node_modules/ng2-toasty/style-bootstrap.css',
+    '../../../../node_modules/ng2-toasty/style-default.css',
+    '../../../../node_modules/ng2-toasty/style-material.css',
   ],
- // directives: CardToggleComponent,
+  // directives: CardToggleComponent,
   encapsulation: ViewEncapsulation.None,
-animations: [cardToggle, cardClose],
+  animations: [cardToggle, cardClose],
 })
 export class GenerateTestComponent implements OnInit {
   @Input() headerContent: string;
-@Input() title: string;
-@Input() blockClass: string;
-@Input() cardClass: string;
-@Input() classHeader = false;
+  @Input() title: string;
+  @Input() blockClass: string;
+  @Input() cardClass: string;
+  @Input() classHeader = false;
 
   cardToggle = 'expanded';
   cardClose = 'open';
@@ -85,10 +85,10 @@ export class GenerateTestComponent implements OnInit {
   theme = 'bootstrap';
   type = 'default';
   closeOther = false;
-  private OperationsXml: Array<OperationXml>= [];
+  private OperationsXml: Array<OperationXml> = [];
   // This array is used to save both Response and Request xml files for every Operation before and after being configured;
 
-  constructor(private router: Router, private http: HttpClient, private toastyService: ToastyService,  private route: ActivatedRoute) { }
+  constructor(private router: Router, private http: HttpClient, private toastyService: ToastyService, private route: ActivatedRoute) { }
 
   ngOnInit() {
 
@@ -98,18 +98,18 @@ export class GenerateTestComponent implements OnInit {
     this.uploadwsdlurl = true;
     this.jdbcCon = false;
     this.sub = this.route
-    .queryParams
-    .subscribe(params => {
-      console.log(params);
-      // Defaults to 0 if no query param provided.
-      this.pname = params['project'];
-      this.pclient = params['client'];
-      this.ptype = params['type'];
-      console.log(this.pname);
-    });
+      .queryParams
+      .subscribe(params => {
+        console.log(params);
+        // Defaults to 0 if no query param provided.
+        this.pname = params['project'];
+        this.pclient = params['client'];
+        this.ptype = params['type'];
+        console.log(this.pname);
+      });
     this.GetRessourcesJDBC('JDBC');
   }
-// Notification Function
+  // Notification Function
   addToast(options) {
     if (options.closeOther) {
       this.toastyService.clearAll();
@@ -138,7 +138,7 @@ export class GenerateTestComponent implements OnInit {
       case 'warning': this.toastyService.warning(toastOptions); break;
     }
   }
-//  On File Upload
+  //  On File Upload
   fileChange(event) {
 
     let input = event.target;
@@ -160,7 +160,7 @@ export class GenerateTestComponent implements OnInit {
       this.urldata = data;
       this.wsdlfile = this.urldata.FromUrlOutput;
       this.jsonWsdl = this.wsdlfile;
-     // console.log(this.wsdlfile);
+      // console.log(this.wsdlfile);
     });
 
   }
@@ -176,28 +176,37 @@ export class GenerateTestComponent implements OnInit {
       this.dataOps = data;
       console.log(this.dataOps.Operations);
 
-      if ( ! this.dataOps.Operations.Status ) {
+      if (!this.dataOps.Operations.Status) {
 
-        this.addToast ({title: 'Fail', msg: 'This Project already has a Test Project',
-         timeout: 7000, theme: 'default', position: 'top-right', type: 'error'});
+        this.addToast({
+          title: 'Fail', msg: 'This Project already has a Test Project',
+          timeout: 7000, theme: 'default', position: 'top-right', type: 'error'        
+});
         setTimeout(() => {
 
-        this.addToast ({title: 'Delete it First', msg: 'You can delete and generate a new Test Project',
-         timeout: 7000, theme: 'default', position: 'top-right', type: 'warning'});
-      }, 1000); } else {
-          for (let elt of this.dataOps.Operations.Operation) {
-            console.log(elt);
-            this.sqlDirectPath = elt.location;
+          this.addToast({
+            title: 'Delete it First', msg: 'You can delete and generate a new Test Project',
+            timeout: 7000, theme: 'default', position: 'top-right', type: 'warning'          
+});
+        }, 1000);
+      } else {
+        for (let elt of this.dataOps.Operations.Operation) {
+          console.log(elt);
+          this.sqlDirectPath = elt.location;
           this.WsdLOpsArray.push(elt);
         }
-     //   console.log(this.WsdLOpsArray);
+        //   console.log(this.WsdLOpsArray);
 
-        this.addToast ({title: 'Loading', msg: 'Creating Test Project',
-        timeout: 2000, theme: 'default', position: 'top-right', type: 'wait'});
-      setTimeout(() => {
+        this.addToast({
+          title: 'Loading', msg: 'Creating Test Project',
+          timeout: 2000, theme: 'default', position: 'top-right', type: 'wait'
+        });
+        setTimeout(() => {
 
-        this.addToast ({title: 'Success', msg: 'Test Project is created and configured with success',
-        timeout: 9000, theme: 'default', position: 'top-right', type: 'success'});
+          this.addToast({
+            title: 'Success', msg: 'Test Project is created and configured with success',
+            timeout: 9000, theme: 'default', position: 'top-right', type: 'success'          
+});
         }, 3000);
         this.uploadwsdlfile = false;
         this.uploadwsdlurl = false;
@@ -210,79 +219,85 @@ export class GenerateTestComponent implements OnInit {
   }
 
 
-CallXmlForRequest(name: string) {
-  console.log(name);
-  let i: any;
-  for (i of this.WsdLOpsArray){
-  if ( i.name === name ) {
-    const req: string = i.name + 'Request';
-   this.OpXmlItem = {};
-  this.http.post('http://' + API_ENDPOINT + ':8099/GetXmlContent', i.location + 'Request.xml').subscribe(
-    data => {
-      this.OpXmlItem.operationName = name;
-      console.log(this.OpXmlItem.operationName);
-    this.OpXmlItem.opRequest = data['XML2JSON'];
-  // console.log( this.OpXmlItem.opRequest);
-  });
-  }}
+  CallXmlForRequest(name: string) {
+    console.log(name);
+    let i: any;
+    for (i of this.WsdLOpsArray) {
+      if (i.name === name) {
+        const req: string = i.name + 'Request';
+        this.OpXmlItem = {};
+        this.http.post('http://' + API_ENDPOINT + ':8099/GetXmlContent', i.location + 'Request.xml').subscribe(
+          data => {
+            this.OpXmlItem.operationName = name;
+            console.log(this.OpXmlItem.operationName);
+            this.OpXmlItem.opRequest = data['XML2JSON'];
+            // console.log( this.OpXmlItem.opRequest);
+          });
+      }
+    }
 
-  this.configInput = true;
+    this.configInput = true;
   }
   CallXmlForResponse(name: string) {
     console.log(name);
     console.log(name);
-  let i: any;
-  for (i of this.WsdLOpsArray){
-  if ( i.name === name ) {
-    const req: string = i.name + 'Response';
-   this.OpXmlItem = {};
+    let i: any;
+    for (i of this.WsdLOpsArray) {
+      if (i.name === name) {
+        const req: string = i.name + 'Response';
+        this.OpXmlItem = {};
 
-  this.http.post('http://' + API_ENDPOINT + ':8099/GetXmlContent', i.location + 'Response.xml').subscribe(
-    data => {
-      this.OpXmlItem.operationName = name;
-      console.log(this.OpXmlItem.operationName);
-    this.OpXmlItem.opResponse = data['XML2JSON'];
-   // console.log( this.OpXmlItem.opResponse);
-  });
-  }}
-  this.configOutput = true;
+        this.http.post('http://' + API_ENDPOINT + ':8099/GetXmlContent', i.location + 'Response.xml').subscribe(
+          data => {
+            this.OpXmlItem.operationName = name;
+            console.log(this.OpXmlItem.operationName);
+            this.OpXmlItem.opResponse = data['XML2JSON'];
+            // console.log( this.OpXmlItem.opResponse);
+          });
+      }    
+}
+    this.configOutput = true;
   }
 
-// Submit new configured xml file (Request)
+  // Submit new configured xml file (Request)
 
   OnSubmitTestRequest(f: NgForm, name: string) {
-  console.log(f.value);
-  console.log(name);
-  let i: any;
-  for (i of this.WsdLOpsArray){
-    if ( i.name === name ) {
-// tslint:disable-next-line:max-line-length
-this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location + 'Request.xml' + f.value.XmlNewContent ).subscribe(
-    data => {
-      console.log(data);
-    });
+    console.log(f.value);
+    console.log(name);
+    let i: any;
+    for (i of this.WsdLOpsArray) {
+      if (i.name === name) {
+        // tslint:disable-next-line:max-line-length
+        this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location + 'Request.xml' + f.value.XmlNewContent).subscribe(
+          data => {
+            console.log(data);
+          });
+      }
     }
+    this.addToast({
+      title: 'Success', msg: 'Operation Input is successfully saved',
+      timeout: 3000, theme: 'default', position: 'top-right', type: 'success'
+    });
+    this.configInput = false;
   }
-  this.addToast ({title: 'Success', msg: 'Operation Input is successfully saved',
-   timeout: 3000, theme: 'default', position: 'top-right', type: 'success'});
-   this.configInput = false;
-  }
-// Submit new configured xml file (Response)
+  // Submit new configured xml file (Response)
   OnSubmitTestResponse(f: NgForm, name: string) {
     console.log(f.value);
     console.log(name);
     let i: any;
-    for (i of this.WsdLOpsArray){
-      if ( i.name === name ) {
-// tslint:disable-next-line:max-line-length
-this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location + 'Response.xml' + f.value.XmlNewContent ).subscribe(
-      data => {
-        console.log(data);
-      });
+    for (i of this.WsdLOpsArray) {
+      if (i.name === name) {
+        // tslint:disable-next-line:max-line-length
+        this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location + 'Response.xml' + f.value.XmlNewContent).subscribe(
+          data => {
+            console.log(data);
+          });
       }
     }
-    this.addToast ({title: 'Success', msg: 'Operation Output is successfully saved',
-    timeout: 3000, theme: 'default', position: 'top-right', type: 'success'});
+    this.addToast({      
+title: 'Success', msg: 'Operation Output is successfully saved',
+      timeout: 3000, theme: 'default', position: 'top-right', type: 'success'
+    });
     this.configOutput = false;
   }
 
@@ -301,11 +316,13 @@ this.http.post('http://' + API_ENDPOINT + ':8093/ModifyXmlContent', i.location +
   // Add chosen Jdbc Cnx to Test Project
 
   AddexistantJDBCRessource() {
-    this.addToast ({title: '', msg: 'JDBC Connection is being ²&',
-    timeout: 2000, theme: 'default', position: 'top-right', type: 'wait'});
+    this.addToast({
+      title: '', msg: 'JDBC Connection is being ²&',
+      timeout: 2000, theme: 'default', position: 'top-right', type: 'wait'
+    });
     this.jdbcCon = false;
-console.log(this.newAttribute);
-  const  name_config = this.newAttribute;
+    console.log(this.newAttribute);
+    const name_config = this.newAttribute;
 
     // tslint:disable-next-line:max-line-length
     this.http.get('http://' + API_ENDPOINT + ':9907/addExistantJDBC?config_name=' + name_config + '&project_name=' + this.pname + '_Test')
@@ -317,22 +334,26 @@ console.log(this.newAttribute);
         //  this.ProjectName = ff.value.pname;
 
         if (this.data.responce.status === 'failed') {
-          this.addToast ({title: 'Fail', msg: 'An error occured, please check the project resources',
-          timeout: 7000, theme: 'default', position: 'top-right', type: 'error'});
+          this.addToast({
+            title: 'Fail', msg: 'An error occured, please check the project resources',
+            timeout: 7000, theme: 'default', position: 'top-right', type: 'error'
+          });
         }
         // tslint:disable-next-line:one-line
         else {
-          this.addToast ({title: 'Success', msg: 'JDBC Resource added successfully to your test project',
-          timeout: 7000, theme: 'default', position: 'top-right', type: 'successs'});
+          this.addToast({
+            title: 'Success', msg: 'JDBC Resource added successfully to your test project',
+            timeout: 7000, theme: 'default', position: 'top-right', type: 'successs'
+          });
         }
       });
-     this.jdbcCon = false;
-     console.log(this.sqlDirectPath);
-  this.http.post('http://' + API_ENDPOINT + ':8070/ChangeCnx?CnxName=' + name_config, this.sqlDirectPath)
-  .subscribe
-  (data => {
-    console.log(data);
-  });
+    this.jdbcCon = false;
+    console.log(this.sqlDirectPath);
+    this.http.post('http://' + API_ENDPOINT + ':8070/ChangeCnx?CnxName=' + name_config, this.sqlDirectPath)
+      .subscribe
+      (data => {
+        console.log(data);
+      });
   }
 
 

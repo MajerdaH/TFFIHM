@@ -34,8 +34,7 @@
               <label for="wsdlfile"> Upload File</label>
               <br>
               <br>
-              <input name="wsdlurl" type="file" ngModel #wsdlfile="ngModel" (change)="fileChange($event)" accept=".wsdl" style="width:500px"
-                id="avatar" />
+              <input name="wsdlurl" type="file" ngModel #wsdlfile="ngModel" (change)="fileChange($event)" accept=".wsdl" style="width:500px" id="avatar" />
               <br>
             </form>
             <br>
@@ -46,17 +45,17 @@
         </app-card>
       </div>
     </div>
-    <div class="row" *ngIf="jdbcCon" >
+    <div class="row" *ngIf="jdbcCon">
       <div id="content">
-            <label for="ptype"> JDBC Configuration name </label>
-                <select [(ngModel)]="newAttribute" name="newAttribute" >
+        <label for="ptype"> JDBC Configuration name </label>
+        <select [(ngModel)]="newAttribute" name="newAttribute">
                   <!-->  <select [(ngModel)]="newAttribute" name="newAttribute" (ngModelChange)="OnChangeCnx($event)"><-->
                     <option value="" disabled selected>Select JDBC configuration name </option>
                     <option *ngFor="let res of RessourcesJDBCArray" [ngValue]="res"> {{res}} </option>
                   </select>
-                <button class="btn btn-primary" (click)="AddexistantJDBCRessource()"> Submit</button>
-        </div>
-  </div>
+        <button class="btn btn-primary" (click)="AddexistantJDBCRessource()"> Submit</button>
+      </div>
+    </div>
 
 
     <div class="col-sm-14" *ngIf="testchoice">
@@ -73,7 +72,7 @@
                     Configure Input
                   </th>
                   <th>
-                      Configure Output
+                    Configure Output
                   </th>
 
                 </thead>
@@ -83,11 +82,11 @@
 
 
                     <td>
-                        <button class="btn btn-primary" (click)="CallXmlForRequest(Operation.name)">Configure Input</button>
-                      </td>
-                      <td>
-                        <button class="btn btn-primary" (click)="CallXmlForResponse(Operation.name )">Configure Output</button>
-                      </td>
+                      <button class="btn btn-primary" (click)="CallXmlForRequest(Operation.name)">Configure Input</button>
+                    </td>
+                    <td>
+                      <button class="btn btn-primary" (click)="CallXmlForResponse(Operation.name )">Configure Output</button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -112,3 +111,4 @@
         <button class="btn btn-primary">Submit</button>
       </form>
     </div>
+    <ng2-toasty [position]="position"></ng2-toasty>

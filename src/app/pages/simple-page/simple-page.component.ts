@@ -59,7 +59,7 @@ export class SimplePageComponent implements OnInit {
     private router: Router, private http: HttpClient, private toastyService: ToastyService) { }
 
   ngOnInit() {
-    this.serviceUrl = '192.168.110.41';
+    //  this.serviceUrl = '192.168.110.41';
     this.basic = true;
     this.upload = false;
     this.sub = this.route
@@ -74,14 +74,14 @@ export class SimplePageComponent implements OnInit {
   }
 
   GetListProjectUpload(username: string) {
-    this.http.get('http://' + this.serviceUrl + ':9935/GetListProjectUpload?project_upload_owner=' + username).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':9935/GetListProjectUpload?project_upload_owner=' + username).subscribe(data => {
       this.dataprojects = data;
       for (const elt of this.dataprojects.resultSet.record) {
         this.ProjectsUploadArray.push(elt);
       }
       console.log(this.ProjectsUploadArray);
     });
-    this.http.get('http://' + this.serviceUrl + ':8084/GetProject?Username=' + username).subscribe(data => {
+    this.http.get('http://' + API_ENDPOINT + ':8084/GetProject?Username=' + username).subscribe(data => {
       this.dataprojects = data;
       for (const elt of this.dataprojects.resultSet.record) {
         this.ProjectsArray.push(elt);
