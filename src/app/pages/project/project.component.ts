@@ -288,7 +288,7 @@ export class ProjectComponent implements OnInit {
       case 'warning': this.toastyService.warning(toastOptions); break;
     }
   }
-  //choose file to upload node js serviceUrl
+  //choose file to upload node js service
   fileChange(event) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
@@ -296,12 +296,12 @@ export class ProjectComponent implements OnInit {
       let formData: FormData = new FormData();
       formData.append('projet', file, file.name);
 
-      formData.append("destination", "//talanpfe-157/WorkspaceTibco/UsersWorkspace");
+      formData.append("destination", USERS_WORKSPACE);
       let headers = new Headers();
       headers.append('enctype', 'multipart/form-data');
       headers.append('Accept', 'application/json');
       // let options = new RequestOptions({ headers: headers });
-      this.http.post('http://' + this.serviceUrl + ':3001/upload', formData)
+      this.http.post('http://' + API_ENDPOINT + ':3001/upload', formData)
         .catch(error => Observable.throw(error))
         .subscribe(
           data => console.log('success'),
@@ -324,10 +324,11 @@ export class ProjectComponent implements OnInit {
       if (this.data.response == 'failed') {
         //  console.log('project already exists , try another name ! ');
 
-        this.addToast({ title: 'Success', msg: 'please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'warning' });
+        this.addToast({ title: 'Warning', msg: 'please check your input', timeout: 9000, theme: 'default', position: 'top-right', type: 'warning' });
       }
       else {
         console.log('success upload');
+        this.addToast({ title: 'Success', msg: 'Project Uploaded with success', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
       }
 
 
@@ -338,7 +339,7 @@ export class ProjectComponent implements OnInit {
   uploadFolder(f: NgForm, event) {
     if (this.filename == undefined) {
       //  this.uploadFail = true;
-      this.addToast({ title: 'Success', msg: 'please check your input , you shoold choose a project to upload', timeout: 9000, theme: 'default', position: 'top-right', type: 'warning' });
+      this.addToast({ title: 'Warning', msg: 'please check your input , you shoold choose a project to upload', timeout: 9000, theme: 'default', position: 'top-right', type: 'warning' });
     }
     // tslint:disable-next-line:one-line
     else {

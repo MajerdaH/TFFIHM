@@ -320,21 +320,6 @@ export class ProjectActionsComponent implements OnInit {
       }
     });
   }
-  /*  CreateXSD() {
-      this.jsonSelectedOperations = '{"SelectedOperations":{"List":' + JSON.stringify(this.FinalOperations) + '}}';
-      console.log(this.jsonSelectedOperations);
-      // tslint:disable-next-line:max-line-length
-      this.http.post('http://' + API_ENDPOINT + ':9922/createXSD?project_name=' + this.pname, this.jsonSelectedOperations).subscribe(data => {
-        console.log(data);
-        console.log(JSON.stringify(this.SelectedOperations));
-
-        // tslint:disable-next-line:curly
-        if (this.SelectedOperations.length === 0)
-          this.addXSDfail = true;
-        // tslint:disable-next-line:curly
-        else this.addXSDSucc = true;
-      });
-    }*/
   //create xsd for each selected operation
   CreateXSD() {
     this.jsonSelectedOperations = '{"SelectedOperations":{"List":' + JSON.stringify(this.FinalOperations) + '}}';

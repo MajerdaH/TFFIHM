@@ -14,6 +14,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NgForm } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
+import { API_ENDPOINT } from '../../app.constants';
 @Component({
   selector: 'app-simple-page',
   templateUrl: './simple-page.component.html',
@@ -127,7 +128,7 @@ export class SimplePageComponent implements OnInit {
   DeleteField(pname: string) {
     this.pname = pname;
     console.log(this.pname);
-    this.http.get('http://' + this.serviceUrl + ':9946/DeleteProjectUpload?project_name=' + this.pname).subscribe
+    this.http.get('http://' + API_ENDPOINT + ':9946/DeleteProjectUpload?project_name=' + this.pname).subscribe
       (data => {
         console.log(data);
         //this.deleteSuccess = true;
