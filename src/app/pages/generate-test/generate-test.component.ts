@@ -13,6 +13,7 @@ import {CardToggleDirective} from './../../shared/card/card-toggle.directive';
 import {cardToggle, cardClose} from './../../shared/card/card-animation';
 import {ResourcesComponent} from './../resources/resources.component';
 import { API_ENDPOINT } from '../../app.constants';
+import { trigger, transition, animate, style } from '@angular/animations';
 
 
 
@@ -23,10 +24,19 @@ import { API_ENDPOINT } from '../../app.constants';
   '../../../../node_modules/ng2-toasty/style-bootstrap.css',
   '../../../../node_modules/ng2-toasty/style-default.css',
   '../../../../node_modules/ng2-toasty/style-material.css',
-  ],
- // directives: CardToggleComponent,
-  encapsulation: ViewEncapsulation.None,
-animations: [cardToggle, cardClose],
+], encapsulation: ViewEncapsulation.None,
+  animations: [
+    trigger('fadeInOutTranslate', [
+      transition(':enter', [
+        style({opacity: 0}),
+        animate('400ms ease-in-out', style({opacity: 1}))
+      ]),
+      transition(':leave', [
+        style({transform: 'translate(0)'}),
+        animate('400ms ease-in-out', style({opacity: 0}))
+      ])
+    ])
+  ]
 })
 export class GenerateTestComponent implements OnInit {
   @Input() headerContent: string;
@@ -170,13 +180,16 @@ export class GenerateTestComponent implements OnInit {
   // Submit the Uploaded Wsdl Content, Show contained operations in table
   onSubmitUpload(f: NgForm) {
     // tslint:disable-next-line:max-line-length
-
+  
     this.http.post('http://' + API_ENDPOINT + ':8096/GenerateTest?ProjectName=' + this.pname + '&ProjectClient=' + this.pclient + '&ProjectType=' + this.ptype + '&UserName=UserX', this.wsdlfile).subscribe(data => {
       console.log(data);
       this.dataOps = data;
       console.log(this.dataOps.Operations);
 
-      if ( ! this.dataOps.Operations.Status ) {
+      this.addToast ({title: 'Loading', msg: 'Creating Test Project',
+        timeout: 2000, theme: 'default', position: 'top-right', type: 'wait'});
+
+      if (  this.dataOps.Operations.Status !== 'Success' ) {
 
         this.addToast ({title: 'Fail', msg: 'This Project already has a Test Project',
          timeout: 7000, theme: 'default', position: 'top-right', type: 'error'});
@@ -185,26 +198,29 @@ export class GenerateTestComponent implements OnInit {
         this.addToast ({title: 'Delete it First', msg: 'You can delete and generate a new Test Project',
          timeout: 7000, theme: 'default', position: 'top-right', type: 'warning'});
       }, 1000); } else {
-          for (let elt of this.dataOps.Operations.Operation) {
-            console.log(elt);
-            this.sqlDirectPath = elt.location;
-          this.WsdLOpsArray.push(elt);
-        }
-     //   console.log(this.WsdLOpsArray);
 
-        this.addToast ({title: 'Loading', msg: 'Creating Test Project',
-        timeout: 2000, theme: 'default', position: 'top-right', type: 'wait'});
+
       setTimeout(() => {
 
         this.addToast ({title: 'Success', msg: 'Test Project is created and configured with success',
         timeout: 9000, theme: 'default', position: 'top-right', type: 'success'});
         }, 3000);
+
+
+          for (let elt of this.dataOps.Operations.Operation) {
+            console.log(elt);
+            this.sqlDirectPath = elt.location;
+          this.WsdLOpsArray.push(elt);
+
+     //   console.log(this.WsdLOpsArray);
+
         this.uploadwsdlfile = false;
         this.uploadwsdlurl = false;
         this.jdbcCon = true;
         this.testchoice = true;
 
       }
+    }
 
     });
   }

@@ -219,16 +219,6 @@
 
   </ngb-tabset>
 
-<div *ngIf="showdivsucc">
-  <div class="alert_suc">
-    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-    <strong>Success!</strong> Project Created With Success.
-  </div>
+  <ng2-toasty [position]="position"></ng2-toasty>
 </div>
-<div *ngIf="showdivfail">
-  <div class="alert">
-    <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-    This Project Already Exists.
-  </div>
-</div></div>
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, ViewEncapsulation } from '@angular/core';
 import { AfterViewInit, ViewChild, ElementRef, ViewChildren, QueryList } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
@@ -15,6 +15,10 @@ import { HttpModule, Http, Response, Headers} from '@angular/http';
 import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
 import { API_ENDPOINT, USERS_WORKSPACE } from '../../app.constants';
 
+import {CardToggleDirective} from './../../shared/card/card-toggle.directive';
+import {cardToggle, cardClose} from './../../shared/card/card-animation';
+import {ResourcesComponent} from './../resources/resources.component';
+
 @Component({
   // tslint:disable-next-line:component-selector
   selector: 'app-project',
@@ -23,6 +27,7 @@ import { API_ENDPOINT, USERS_WORKSPACE } from '../../app.constants';
   '../../../../node_modules/ng2-toasty/style-bootstrap.css',
   '../../../../node_modules/ng2-toasty/style-default.css',
   '../../../../node_modules/ng2-toasty/style-material.css'],
+  encapsulation: ViewEncapsulation.None,
   animations: [
     trigger('fadeInOutTranslate', [
       transition(':enter', [
@@ -37,11 +42,19 @@ import { API_ENDPOINT, USERS_WORKSPACE } from '../../app.constants';
   ]
 })
 export class ProjectComponent implements OnInit {
-  position: any;
+ 
 
 
   @ViewChildren('messages') messages: QueryList<any>;
   @ViewChild('content') content: ElementRef;
+
+  position = 'bottom-right';
+  msg: string;
+  showClose = true;
+  timeout = 5000;
+  theme = 'bootstrap';
+  type = 'default';
+  closeOther = false;
   // Data Variables
   serviceUrl: string;
   data: any;
@@ -91,6 +104,20 @@ export class ProjectComponent implements OnInit {
   public sortOrder = 'desc';
   public res: any;
   profitChartOption: any;
+
+  @Input() headerContent: string;
+  @Input() title: string;
+  @Input() blockClass: string;
+  @Input() cardClass: string;
+  @Input() classHeader = false;
+  
+    cardToggle = 'expanded';
+    cardClose = 'open';
+    fullCard: string;
+    fullCardIcon: string;
+    loadCard = false;
+    isCardToggled = false;
+    cardLoad: string;
   constructor(private http: HttpClient, private router: Router, private toastyService: ToastyService) { }
 
   // Listing Projects and hiding divisions ON INIT
@@ -195,11 +222,20 @@ export class ProjectComponent implements OnInit {
       this.data = data;
       console.log(this.data.GenerateProjectResponse.Status);
       this.ProjectName = f.value.pname;
+      this.addToast ({title: 'Loading', msg: 'Generating a New Project',
+      timeout: 2000, theme: 'default', position: 'top-right', type: 'wait'});
 
       if (this.data.GenerateProjectResponse.Status === 'FAILED') {
         this.showdivsucc = false;
         this.showdivfail = true;
         this.addnew = false;
+        this.addToast ({title: 'Fail', msg: 'This Project already exists',
+        timeout: 7000, theme: 'default', position: 'top-right', type: 'error'});
+       setTimeout(() => {
+
+       this.addToast ({title: 'Try another Name', msg: 'Projects must have a unique name',
+        timeout: 7000, theme: 'default', position: 'top-right', type: 'warning'});
+     }, 1000);
       }
 
       // tslint:disable-next-line:one-line
@@ -209,6 +245,12 @@ export class ProjectComponent implements OnInit {
         this.showdivfail = false;
         this.showdivsucc = true;
         this.addnew = false;
+        setTimeout(() => {
+
+          this.addToast ({title: 'Success', msg: 'Your project  is created and configured with success',
+          timeout: 9000, theme: 'default', position: 'top-right', type: 'success'});
+          }, 3000);
+  
 
       }
     });
@@ -363,6 +405,7 @@ export class ProjectComponent implements OnInit {
     });
 
   }
+  
 
 
 }
