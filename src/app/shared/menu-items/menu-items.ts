@@ -189,7 +189,7 @@ const MENUITEMS = [
       {
         state: 'simple-page',
         short_label: 'S',
-        name: 'Simple Page',
+        name: 'Uploaded Projects',
         type: 'link',
         icon: 'ti-layout-sidebar-left'
       }
