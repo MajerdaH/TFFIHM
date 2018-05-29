@@ -5,6 +5,15 @@ import {AuthComponent} from './layout/auth/auth.component';
 export const AppRoutes: Routes = [
   {
     path: '',
+    redirectTo: 'login',
+    pathMatch: 'full'
+  },
+  {
+    path: 'login',
+    loadChildren: './pages/with-bg-image/with-bg-image.module#WithBgImageModule'
+  },
+  {
+    path: '',
     component: AdminComponent,
     children: [
       {

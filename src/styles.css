@@ -6019,8 +6019,8 @@ a[data-toggle="lightbox"] .img-fluid, a[data-lightbox="roadtrip"] .img-fluid, a[
 }
 
 .bg-primary {
-  background-color: #0033cc !important;
-  color: #fff;
+  background-color: #FFFFFF !important;
+  color: #FFFFFF;
 }
 
 .bg-warning {
@@ -18215,7 +18215,7 @@ table.footable-paging-center > tfoot > tr.footable-paging > td {
  ========================================= */
 .common-img-bg {
   background-size: cover;
-  background: url(assets/images/bg.jpg) no-repeat center center fixed;
+  background: url(assets/images/bg_body_3.png) no-repeat center center fixed;
   height: 100%;
 }
 
