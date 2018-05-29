@@ -10,8 +10,8 @@ import { OperationCall } from '../../operation-call';
 import { HttpModule } from '@angular/http';
 import { ToastData, ToastOptions, ToastyService } from 'ng2-toasty';
 import { cardToggle, cardClose } from '../../shared/card/card-animation';
-import {OperationXml} from '../../operation-xml' ;
-import {CardToggleDirective} from './../../shared/card/card-toggle.directive';
+import { OperationXml } from '../../operation-xml';
+import { CardToggleDirective } from './../../shared/card/card-toggle.directive';
 import { API_ENDPOINT } from '../../app.constants';
 
 
@@ -19,9 +19,9 @@ import { API_ENDPOINT } from '../../app.constants';
   selector: 'app-project-actions',
   templateUrl: './project-actions.component.html',
   styleUrls: ['./project-actions.component.css',
-  '../../../../node_modules/ng2-toasty/style-bootstrap.css',
-  '../../../../node_modules/ng2-toasty/style-default.css',
-  '../../../../node_modules/ng2-toasty/style-material.css',
+    '../../../../node_modules/ng2-toasty/style-bootstrap.css',
+    '../../../../node_modules/ng2-toasty/style-default.css',
+    '../../../../node_modules/ng2-toasty/style-material.css',
   ],
   encapsulation: ViewEncapsulation.None,
   animations: [cardToggle, cardClose],
@@ -33,20 +33,20 @@ export class ProjectActionsComponent implements OnInit {
   @Input() cardClass: string;
   @Input() classHeader = false;
 
-    cardToggle = 'expanded';
-    cardClose = 'open';
-    fullCard: string;
-    fullCardIcon: string;
-    loadCard = false;
-    isCardToggled = false;
-    cardLoad: string;
-    position = 'bottom-right';
-    msg: string;
-    showClose = true;
-    timeout = 5000;
-    theme = 'bootstrap';
-    type = 'default';
-    closeOther = false;
+  cardToggle = 'expanded';
+  cardClose = 'open';
+  fullCard: string;
+  fullCardIcon: string;
+  loadCard = false;
+  isCardToggled = false;
+  cardLoad: string;
+  position = 'bottom-right';
+  msg: string;
+  showClose = true;
+  timeout = 5000;
+  theme = 'bootstrap';
+  type = 'default';
+  closeOther = false;
 
   public sub: any;
   public pname: any;
@@ -104,7 +104,7 @@ export class ProjectActionsComponent implements OnInit {
         this.ptype = params['type'];
         console.log(this.pname);
       });
-this.showUpload = false;
+    this.showUpload = false;
   }
 
   // Show Create Operations Div
@@ -123,20 +123,24 @@ this.showUpload = false;
     console.log(this.jsonOperations);
 
     // tslint:disable-next-line:max-line-length
-    this.http.post('http://'  + API_ENDPOINT +  ':8088/CreateOperation', this.jsonOperations).subscribe(data => {
+    this.http.post('http://' + API_ENDPOINT + ':8088/CreateOperation', this.jsonOperations).subscribe(data => {
       console.log(data);
       this.data = data;
       if (this.data.GenerateOperationResponse.Status === 'FAILED') {
-       /* this.OperationsNotAdded = true;
-        this.OperationsAdded = false;*/
+        /* this.OperationsNotAdded = true;
+         this.OperationsAdded = false;*/
         this.operation = false;
-        this.addToast ({title: 'Fail', msg: 'This operation already exists in your project, try anothher name please',
-        timeout: 7000, theme: 'default', position: 'top-right', type: 'error'});
-      }else {
-      /*  this.OperationsAdded = true;
-        this.OperationsNotAdded = false;*/
-        this.addToast ({title: 'Success', msg: 'Operation added with success to your project',
-        timeout: 7000, theme: 'default', position: 'top-right', type: 'success'});
+        this.addToast({
+          title: 'Fail', msg: 'This operation already exists in your project, try anothher name please',
+          timeout: 7000, theme: 'default', position: 'top-right', type: 'error'
+        });
+      } else {
+        /*  this.OperationsAdded = true;
+          this.OperationsNotAdded = false;*/
+        this.addToast({
+          title: 'Success', msg: 'Operation added with success to your project',
+          timeout: 7000, theme: 'default', position: 'top-right', type: 'success'
+        });
         this.operation = false;
       }
     });
@@ -165,8 +169,8 @@ this.showUpload = false;
   }
   // Show Upload Wsdl Divs in the same page (file and url)
   UploadWSDL() {
-  this.showUpload = true;
-  this.operation = false;
+    this.showUpload = true;
+    this.operation = false;
 
   }
   GenerateTest() {
@@ -174,10 +178,10 @@ this.showUpload = false;
   }
   ExposeSoapOperation() {
     this.router.navigate(['./exposeSoap'], { queryParams: { project: this.pname, type: this.ptype, client: this.pclient } });
-}
+  }
   // Detect Uploaded file and copy its content in wsdlfile variable
   fileChangeWsdl(event) {
-   // this.uploadwsdlurl = false;
+    // this.uploadwsdlurl = false;
     let input = event.target;
     for (var index = 0; index < input.files.length; index++) {
       let reader = new FileReader();
@@ -191,7 +195,7 @@ this.showUpload = false;
   // Loading file content from the Url in input
   LoadFromUrl(f: NgForm) {
     console.log(f.value.wsdlurl);
-   // this.uploadwsdlfile = false;
+    // this.uploadwsdlfile = false;
     this.http.get('http://' + API_ENDPOINT + ':8094/WsdlFromUrl?WSDLURL=' + f.value.wsdlurl).subscribe(data => {
       this.urldata = data;
       this.wsdlfile = this.urldata.FromUrlOutput;
@@ -205,7 +209,7 @@ this.showUpload = false;
   onSubmitUpload(f: NgForm) {
     this.WsdLOpsArray = [];
     // tslint:disable-next-line:max-line-length
-   // console.log(this.wsdlfile);
+    // console.log(this.wsdlfile);
     this.http.post('http://' + API_ENDPOINT + ':8091/CreateWsdl?projectName=' + this.pname + '&WsdlName=WSDL', this.wsdlfile).subscribe(data => {
       this.dataOps = data;
       console.log(this.dataOps.Operations.name);
@@ -215,8 +219,8 @@ this.showUpload = false;
       console.log(this.WsdLOpsArray[0]);
 
     });
-  // tslint:disable-next-line:max-line-length
-  this.addToast ({title: 'Success', msg: 'Wsdl File is added Successfully to Your Project', timeout: 9000, theme: 'default', position: 'top-right', type: 'success'});
+    // tslint:disable-next-line:max-line-length
+    this.addToast({ title: 'Success', msg: 'Wsdl File is added Successfully to Your Project', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
     this.showActions = true;
     this.modify = false;
     this.displayOperationsList = true;
@@ -307,29 +311,52 @@ this.showUpload = false;
       this.addLogdata = data;
       if (this.addLogdata.Response === "Success") {
         // tslint:disable-next-line:max-line-length
-        this.addToast ({title: 'Success', msg: 'Call Processes are added successfully to your project', timeout: 9000, theme: 'default', position: 'top-right', type: 'success'});
+        this.addToast({ title: 'Success', msg: 'Call Processes are added successfully to your project', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
       }
       // tslint:disable-next-line:one-line
       else {
         // tslint:disable-next-line:max-line-length
-        this.addToast ({title: 'Fail', msg: 'An error occured, Calls cannot be added to your project', timeout: 9000, theme: 'default', position: 'top-right', type: 'error'});
-       }
+        this.addToast({ title: 'Fail', msg: 'An error occured, Calls cannot be added to your project', timeout: 9000, theme: 'default', position: 'top-right', type: 'error' });
+      }
     });
   }
+  //create xsd for each selected operation
   CreateXSD() {
+    //create xsds
     this.jsonSelectedOperations = '{"SelectedOperations":{"List":' + JSON.stringify(this.FinalOperations) + '}}';
     console.log(this.jsonSelectedOperations);
-    // tslint:disable-next-line:max-line-length
-    this.http.post('http://' + API_ENDPOINT + + ':9922/createXSD?project_name=' + this.pname, this.jsonSelectedOperations).subscribe(data => {
+    this.http.post('http://' + API_ENDPOINT + ':9922/createXSD?project_name=' + this.pname, this.jsonSelectedOperations).subscribe(data => {
+      let headers = new Headers();
+      headers.append('enctype', 'multipart/form-data');
+      headers.append('Accept', 'application/json');
       console.log(data);
       console.log(JSON.stringify(this.SelectedOperations));
 
-      // tslint:disable-next-line:curly
-      if (this.SelectedOperations.length === 0)
-        this.addXSDfail = true;
-      // tslint:disable-next-line:curly
-      else this.addXSDSucc = true;
+      if (this.SelectedOperations.length == 0)
+        //    this.addXSDfail = true;
+        this.addToast({ title: 'warning', msg: 'Operations are not selected, please check them', timeout: 9000, theme: 'default', position: 'top-right', type: 'warning' });
+      else
+        //this.addXSDSucc = true;
+        this.addToast({ title: 'Success', msg: 'Operations XSD are created with suceess', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
     });
+  }
+
+  //generate documentation tibco service
+
+  GenerateDocumentataion(pname: string) {
+    console.log('*****' + this.pname);
+    this.http.get('http://' + API_ENDPOINT + ':9797/generateDoc?project_name=' + this.pname).subscribe(data => {
+      console.log(data);
+    });
+
+    this.addToast({ title: 'Loading', msg: 'Please wait', timeout: 3000, theme: 'default', position: 'top-right', type: 'wait' });
+    setTimeout(() => {
+      // tslint:disable-next-line:max-line-length
+      this.addToast({ title: 'Success', msg: 'Documentation is generated successfully to your project', timeout: 9000, theme: 'default', position: 'top-right', type: 'success' });
+    }, 3000);
+
+
+
   }
   addToast(options) {
     if (options.closeOther) {
@@ -360,14 +387,14 @@ this.showUpload = false;
     }
   }
   // call tibco service to generate documentation
- GenerateDocumentataion(pname: string) {
-  console.log('*****' + this.pname);
-  this.http.get('http://' + API_ENDPOINT + ':9797/generateDoc?project_name=' + this.pname).subscribe(data => {
-    console.log(data);
+  /*  GenerateDocumentataion(pname: string) {
+      console.log('*****' + this.pname);
+      this.http.get('http://' + API_ENDPOINT + ':9797/generateDoc?project_name=' + this.pname).subscribe(data => {
+        console.log(data);
 
-    this.documentataionAdded = true;
+        this.documentataionAdded = true;
 
-  });
-}
-
+      });
+    }
+  */
 }
