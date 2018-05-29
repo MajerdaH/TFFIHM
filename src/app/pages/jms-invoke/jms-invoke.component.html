@@ -131,14 +131,29 @@
                  </tr>
                    <tr >
                        <td>
-                          <input name="check" type="checkbox" #Loginfo  value="Info" > Log Info<br>
-                          <input name ="check" type="checkbox" #LogExcep  value="Exception" > Log Exception<br>
+                          <!-- <input name="check" type="checkbox" #Loginfo  value="Info" > Log Info<br> -->
+                                                    
+                          <div class="checkbox-fade fade-in-primary">
+                            <label>
+                              <input type="checkbox" value="Info" #Loginfo name="check" >
+                              <span class="cr"><i class="cr-icon icofont icofont-ui-check txt-primary"></i></span>
+                              <span class="text-inverse">Log Info</span>
+                            </label>
+                          </div><br>
+                          <div class="checkbox-fade fade-in-primary">
+                            <label>
+                              <input type="checkbox" value="Exception" #LogExcep name="check" >
+                              <span class="cr"><i class="cr-icon icofont icofont-ui-check txt-primary"></i></span>
+                              <span class="text-inverse">Log Exception</span>
+                            </label>
+                          </div>
+                          <!-- <input name ="check" type="checkbox" #LogExcep  value="Exception" > Log Exception<br> -->
 
                           </td>
                           <td>
                             <input  type="radio" name="Call"  #Syn value="Synchrone" > Call Synchrone <br>
                             <input  type="radio" name="Call"  #Asyn value="Asynchrone" > Call Asynchrone <br>
-
+                          
                           </td>
                        </tr>
 
@@ -162,6 +177,3 @@
 </div>
 
 <ng2-toasty [position]="position"></ng2-toasty>
-
-
-

@@ -109,7 +109,7 @@ export class JmsInvokeComponent implements OnInit {
 
 
 GetProjects(username: string) {
-  this.http.get('http:/' +  API_ENDPOINT + ':8084/GetProject?Username=' + username).subscribe(data => {
+  this.http.get('http://' + API_ENDPOINT + ':8084/GetProject?Username=' + username).subscribe(data => {
     this.dataprojects = data;
     for (const elt of this.dataprojects.resultSet.record) {
       this.ProjectsArray.push(elt);
